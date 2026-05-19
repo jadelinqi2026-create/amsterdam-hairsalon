@@ -285,12 +285,12 @@
     <div class="filter-chip" onclick="toggleFilter(this,'svc','bleach')">漂白脱色</div>
   </div>
   <div class="filter-divider"></div>
-  <!-- 烫发（仅荷兰店有标注，上海店暂无法从高德验证） -->
-  <div class="filter-group">
+  <!-- 烫发：由用户评价积累后自动出现 -->
+  <div class="filter-group" id="filter-perm-group" style="display:none">
     <span class="filter-group-label">烫发</span>
-    <div class="filter-chip" onclick="toggleFilter(this,'svc','straight')" title="仅荷兰店数据支持此筛选">拉直</div>
-    <div class="filter-chip" onclick="toggleFilter(this,'svc','perm')" title="仅荷兰店数据支持此筛选">烫卷</div>
-    <div class="filter-chip" onclick="toggleFilter(this,'svc','digital-perm')" title="仅荷兰店数据支持此筛选">数字烫</div>
+    <div class="filter-chip" onclick="toggleFilter(this,'svc','straight')">拉直</div>
+    <div class="filter-chip" onclick="toggleFilter(this,'svc','perm')">烫卷</div>
+    <div class="filter-chip" onclick="toggleFilter(this,'svc','digital-perm')">数字烫</div>
   </div>
   <div class="filter-divider"></div>
   <!-- 其他 -->
@@ -363,9 +363,22 @@
               <label style="font-size:.72rem;color:#aaa;font-weight:600">昵称（选填）</label>
               <input id="rv-nick" type="text" placeholder="匿名用户" style="padding:7px 10px;border:1.5px solid #e0e0d8;border-radius:8px;font-size:.85rem;outline:none"/>
             </div>
-            <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:120px">
-              <label style="font-size:.72rem;color:#aaa;font-weight:600">服务项目（选填）</label>
-              <input id="rv-service" type="text" placeholder="如：挑染、女士剪发…" style="padding:7px 10px;border:1.5px solid #e0e0d8;border-radius:8px;font-size:.85rem;outline:none"/>
+          </div>
+          <div style="margin-bottom:10px">
+            <div style="font-size:.72rem;color:#aaa;font-weight:600;margin-bottom:6px">✂️ 我做了哪些服务（可多选，用于完善筛选数据）</div>
+            <div id="rv-services" style="display:flex;flex-wrap:wrap;gap:6px">
+              <label style="display:flex;align-items:center;gap:4px;background:#f0f0ea;border-radius:20px;padding:4px 10px;font-size:.78rem;cursor:pointer"><input type="checkbox" class="rv-svc" value="女士剪发" style="margin:0"> 女士剪发</label>
+              <label style="display:flex;align-items:center;gap:4px;background:#f0f0ea;border-radius:20px;padding:4px 10px;font-size:.78rem;cursor:pointer"><input type="checkbox" class="rv-svc" value="男士剪发" style="margin:0"> 男士剪发</label>
+              <label style="display:flex;align-items:center;gap:4px;background:#f0f0ea;border-radius:20px;padding:4px 10px;font-size:.78rem;cursor:pointer"><input type="checkbox" class="rv-svc" value="儿童剪" style="margin:0"> 儿童剪</label>
+              <label style="display:flex;align-items:center;gap:4px;background:#f0f0ea;border-radius:20px;padding:4px 10px;font-size:.78rem;cursor:pointer"><input type="checkbox" class="rv-svc" value="挑染" style="margin:0"> 挑染</label>
+              <label style="display:flex;align-items:center;gap:4px;background:#f0f0ea;border-radius:20px;padding:4px 10px;font-size:.78rem;cursor:pointer"><input type="checkbox" class="rv-svc" value="挂耳染" style="margin:0"> 挂耳染</label>
+              <label style="display:flex;align-items:center;gap:4px;background:#f0f0ea;border-radius:20px;padding:4px 10px;font-size:.78rem;cursor:pointer"><input type="checkbox" class="rv-svc" value="渐变色" style="margin:0"> 渐变色</label>
+              <label style="display:flex;align-items:center;gap:4px;background:#f0f0ea;border-radius:20px;padding:4px 10px;font-size:.78rem;cursor:pointer"><input type="checkbox" class="rv-svc" value="漂白脱色" style="margin:0"> 漂白脱色</label>
+              <label style="display:flex;align-items:center;gap:4px;background:#f0f0ea;border-radius:20px;padding:4px 10px;font-size:.78rem;cursor:pointer"><input type="checkbox" class="rv-svc" value="拉直" style="margin:0"> 拉直</label>
+              <label style="display:flex;align-items:center;gap:4px;background:#f0f0ea;border-radius:20px;padding:4px 10px;font-size:.78rem;cursor:pointer"><input type="checkbox" class="rv-svc" value="烫卷" style="margin:0"> 烫卷</label>
+              <label style="display:flex;align-items:center;gap:4px;background:#f0f0ea;border-radius:20px;padding:4px 10px;font-size:.78rem;cursor:pointer"><input type="checkbox" class="rv-svc" value="数字烫" style="margin:0"> 数字烫</label>
+              <label style="display:flex;align-items:center;gap:4px;background:#f0f0ea;border-radius:20px;padding:4px 10px;font-size:.78rem;cursor:pointer"><input type="checkbox" class="rv-svc" value="头皮护理" style="margin:0"> 头皮护理</label>
+              <label style="display:flex;align-items:center;gap:4px;background:#f0f0ea;border-radius:20px;padding:4px 10px;font-size:.78rem;cursor:pointer"><input type="checkbox" class="rv-svc" value="其他" style="margin:0"> 其他</label>
             </div>
           </div>
           <textarea id="rv-text" placeholder="分享你的真实体验…" style="width:100%;padding:10px;border:1.5px solid #e0e0d8;border-radius:8px;font-size:.85rem;height:80px;resize:vertical;outline:none;font-family:inherit"></textarea>
@@ -387,6 +400,16 @@
 
 <script>
 // ============================================================
+// 烫发筛选解锁（由用户标注数据驱动）
+// ============================================================
+function checkUnlockPermFilters() {
+  const permTags = ['拉直','烫卷','数字烫'];
+  const hasAny = SHOPS.some(s => s.tags.some(t => permTags.includes(t)));
+  const el = document.getElementById('filter-perm-group');
+  if (el) el.style.display = hasAny ? '' : 'none';
+}
+
+// ============================================================
 // Google Sheets 评价接口
 // ============================================================
 const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzG3xaDH0CjvZpcKgBC058iB9P40o3nKHR1-Rgs6CUvOMnpIXMYsU_G__v4XPklIBEd/exec';
@@ -400,7 +423,14 @@ async function loadUserReviews() {
       const id = parseInt(r['店铺ID']);
       if (!userReviews[id]) userReviews[id] = [];
       userReviews[id].push(r);
+      // 把用户标注的服务同步到店铺标签
+      const svcs = (r['服务项目'] || '').split('、').filter(Boolean);
+      const shop = SHOPS.find(s => s.id === id);
+      if (shop && svcs.length) {
+        svcs.forEach(s => { if (!shop.tags.includes(s)) shop.tags.push(s); });
+      }
     });
+    checkUnlockPermFilters();
   } catch(e) { console.warn('评价加载失败', e); }
 }
 
@@ -408,7 +438,8 @@ async function submitReview(shopId, shopName, city) {
   const rating  = document.getElementById('rv-rating').value;
   const text    = document.getElementById('rv-text').value.trim();
   const nick    = document.getElementById('rv-nick').value.trim() || '匿名用户';
-  const svc     = document.getElementById('rv-service').value.trim();
+  const svcs    = Array.from(document.querySelectorAll('.rv-svc:checked')).map(c => c.value);
+  const svc     = svcs.join('、');
   if (!text) { alert('请填写评价内容'); return; }
   const btn = document.getElementById('rv-submit');
   btn.disabled = true; btn.textContent = '提交中…';
@@ -418,11 +449,18 @@ async function submitReview(shopId, shopName, city) {
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({shopId, shopName, city, rating, text, nickname: nick, service: svc})
     });
-    // no-cors 无法读响应，默认成功
     if (!userReviews[shopId]) userReviews[shopId] = [];
     const today = new Date().toLocaleDateString('zh-CN');
-    userReviews[shopId].push({'店铺ID':shopId,'店铺名称':shopName,'评分':rating,'评价内容':text,'评价日期':today,'城市':city,'用户昵称':nick,'服务项目':svc});
+    const entry = {'店铺ID':shopId,'店铺名称':shopName,'评分':rating,'评价内容':text,'评价日期':today,'城市':city,'用户昵称':nick,'服务项目':svc};
+    userReviews[shopId].push(entry);
+    // 把用户标注的服务加进该店铺标签
+    const shop = SHOPS.find(s => s.id === shopId);
+    if (shop && svcs.length) {
+      svcs.forEach(s => { if (!shop.tags.includes(s)) shop.tags.push(s); });
+      checkUnlockPermFilters();
+    }
     renderUserReviews(shopId);
+    document.querySelectorAll('.rv-svc').forEach(c => c.checked = false);
     document.getElementById('rv-text').value = '';
     document.getElementById('rv-nick').value = '';
     btn.textContent = '✅ 提交成功！';
@@ -432,6 +470,8 @@ async function submitReview(shopId, shopName, city) {
     alert('提交失败，请稍后再试');
   }
 }
+
+
 
 function renderUserReviews(shopId) {
   const el = document.getElementById('user-reviews-list');
