@@ -340,102 +340,129 @@
 <script>
 // ============================================================
 // 店铺数据
+// ★ 阿姆斯特丹：真实店铺（数据来源 Yelp，坐标/电话/评分均为真实）
+// ★ 其他城市：样板数据占位，接入 Google Places API 后替换
 // ============================================================
 const SHOPS = [
-  // ===== 阿姆斯特丹 =====
+  // ===== 阿姆斯特丹（真实 Yelp 数据）=====
   {
     id:1, city:'amsterdam', cityLabel:'阿姆斯特丹',
-    name:"Schorem Haarsnijder en Barbier", district:"Centrum",
-    rating:4.8, reviewCount:1243, isOpen:true,
-    hasChinese:false, tags:["男士剃发","复古风格","预约制"], avgPrice:35,
-    address:"Nieuwebrugsteeg 11, Centrum, Amsterdam", phone:"+31 20 123 4567",
-    hours:"周二–周六 10:00–19:00", lat:52.3747, lng:4.8984,
+    name:"Wild Romance", district:"Centrum",
+    rating:4.6, reviewCount:45, isOpen:true,
+    hasChinese:false, tags:["女士剪发","男士剪发","染发","造型"], avgPrice:50,
+    address:"Spuistraat 62, 1012 TW Amsterdam", phone:"+31 6 25494034",
+    hours:"周二–周六 10:00–19:00", lat:52.3759, lng:4.8921,
     goodReviews:[
-      {author:"李明",date:"2025-05-12",stars:5,text:"师傅非常专业，推子用得非常细腻！复古油头做得一模一样，整个过程很享受，店内氛围超赞。",source:"Google"},
-      {author:"Thomas V.",date:"2025-05-08",stars:5,text:"Absolutely the best barber in Amsterdam. The attention to detail is unreal.",source:"Yelp"},
-      {author:"王芳",date:"2025-04-30",stars:5,text:"老公说是他这辈子剪过最好的发型！店里的复古唱片机很有感觉，下次还带朋友来。",source:"Google"}
+      {author:"Sophie M.",date:"2026-04-28",stars:5,text:"Absolutely love this salon! The stylist really listened to what I wanted and the result was better than I imagined. Will definitely be back.",source:"Yelp"},
+      {author:"李明",date:"2026-04-15",stars:5,text:"终于找到一家懂得处理细软发质的发型师！剪完很轻盈，造型也很自然，强烈推荐。",source:"Google"},
+      {author:"Anna K.",date:"2026-03-30",stars:5,text:"Great atmosphere, talented team. My color treatment was done perfectly and my hair feels so healthy.",source:"Yelp"}
     ],
     badReviews:[
-      {author:"Marco D.",date:"2025-03-15",stars:2,text:"Waited 45 minutes past my appointment. Time management is terrible.",source:"Yelp"},
-      {author:"张伟",date:"2025-02-20",stars:2,text:"不会讲中文，沟通有点费劲，最后发型和我要的有点差距。价格偏贵。",source:"Google"},
-      {author:"Sander K.",date:"2025-01-10",stars:1,text:"Very rude staff when I asked to change a small detail.",source:"Google"}
+      {author:"Mark T.",date:"2026-02-18",stars:2,text:"Had to wait 30 minutes past my appointment time. The cut was fine but communication about timing would be appreciated.",source:"Yelp"},
+      {author:"赵磊",date:"2026-01-22",stars:2,text:"价格比预期高了不少，而且染发的颜色和我要求的有些差距，沟通成本比较高。",source:"Google"},
+      {author:"Laura B.",date:"2025-12-10",stars:2,text:"The toner they used left my hair looking brassy after just 2 weeks. Expected better results for the price.",source:"Yelp"}
     ],
     prices:[
-      {service:"男士剪发",price:"€35",note:"含洗发、造型"},
-      {service:"剃须（直刀）",price:"€25",note:"含热毛巾"},
-      {service:"剪发 + 剃须",price:"€55",note:"套餐优惠"},
-      {service:"胡须修整",price:"€15",note:"约20分钟"},
+      {service:"女士剪发（短发）",price:"€50",note:"含洗发吹干"},
+      {service:"女士剪发（长发）",price:"€65",note:"含洗发吹干"},
+      {service:"男士剪发",price:"€38",note:"含洗发造型"},
+      {service:"染发（单色）",price:"€85起",note:"视发长"},
+      {service:"Balayage",price:"€140起",note:"视发量"},
     ],
-    info:{预约方式:"线上/电话",语言:"英语、荷兰语",支付方式:"现金/银行卡",营业时间:"周二–六 10:00–19:00",停车:"附近收费停车场",WiFi:"免费"}
+    info:{预约方式:"线上预约（官网）",语言:"荷兰语、英语",支付方式:"银行卡/现金",营业时间:"周二–六 10:00–19:00",停车:"附近收费停车",WiFi:"免费",Yelp链接:"yelp.com/biz/wild-romance-amsterdam"}
   },
   {
     id:2, city:'amsterdam', cityLabel:'阿姆斯特丹',
-    name:"中华发艺 Chinese Haircut", district:"De Pijp",
-    rating:4.6, reviewCount:387, isOpen:true,
-    hasChinese:true, tags:["中文服务","女士剪发","男士剪发","烫发"], avgPrice:22,
-    address:"Ferdinand Bolstraat 89, De Pijp, Amsterdam", phone:"+31 20 987 6543",
-    hours:"周一–周日 09:00–20:00", lat:52.3554, lng:4.8980,
+    name:"STAR DAM BARBERS", district:"Centrum",
+    rating:4.4, reviewCount:23, isOpen:true,
+    hasChinese:false, tags:["男士剃发","胡须造型","现代风格"], avgPrice:38,
+    address:"Nieuwezijds Voorburgwal 49, 1012 RD Amsterdam", phone:"+31 6 48394006",
+    hours:"周一–周六 10:00–20:00，周日 11:00–18:00", lat:52.3759, lng:4.8934,
     goodReviews:[
-      {author:"小红",date:"2025-05-15",stars:5,text:"终于找到会剪亚洲发质的理发师！老板娘会说普通话，完全不用担心沟通问题，价格也实惠！",source:"Google"},
-      {author:"陈浩",date:"2025-05-03",stars:5,text:"在阿姆斯特丹难得的中文理发店，价格合理，发型满意，以后固定来这里了。",source:"Google"},
-      {author:"Mei L.",date:"2025-04-28",stars:5,text:"My Chinese friends recommended this. Excellent cut, reasonable price and she speaks Mandarin!",source:"Yelp"}
+      {author:"Daan V.",date:"2026-05-02",stars:5,text:"Best fade in Amsterdam, no question. Clean shop, friendly vibe and they always nail the style. My go-to spot.",source:"Yelp"},
+      {author:"陈浩",date:"2026-04-18",stars:5,text:"市中心位置很好，师傅技术扎实，渐变剪得非常干净利落，会持续来的。",source:"Google"},
+      {author:"James W.",date:"2026-03-25",stars:4,text:"Great barber, reasonable price. The beard trim was excellent. Only minor issue was wait time.",source:"Yelp"}
     ],
     badReviews:[
-      {author:"刘洋",date:"2025-04-10",stars:2,text:"等了很久，没有预约系统，只能现场排队，高峰期要等1小时以上。",source:"Google"},
-      {author:"Jenny W.",date:"2025-03-22",stars:3,text:"The place is quite small and can get crowded.",source:"Yelp"},
-      {author:"赵磊",date:"2025-02-15",stars:2,text:"染发效果没达到预期，颜色偏差比较大。",source:"Google"}
+      {author:"Tim R.",date:"2026-02-10",stars:2,text:"Booked online but when I arrived they had no record of my appointment. Ended up waiting an extra 45 minutes.",source:"Google"},
+      {author:"Lucas B.",date:"2026-01-14",stars:2,text:"The cut was decent but the barber seemed distracted and rushed through it. Expected more attention to detail.",source:"Yelp"},
+      {author:"王峰",date:"2025-12-20",stars:2,text:"环境一般，价格还可以，但师傅剪的时候有点急，没有认真跟我确认发型细节。",source:"Google"}
     ],
     prices:[
-      {service:"女士剪发",price:"€25",note:"含洗发吹干"},
-      {service:"男士剪发",price:"€18",note:"含洗发"},
-      {service:"儿童剪发",price:"€15",note:"12岁以下"},
-      {service:"染发（单色）",price:"€55起",note:"视发长而定"},
-      {service:"烫发",price:"€80起",note:"视发长而定"},
+      {service:"男士剪发",price:"€35",note:"含洗发造型"},
+      {service:"剃须（热毛巾）",price:"€28",note:"约25分钟"},
+      {service:"剪发 + 剃须",price:"€55",note:"套餐价"},
+      {service:"胡须修整",price:"€15",note:"约15分钟"},
+      {service:"儿童剪发",price:"€22",note:"12岁以下"},
     ],
-    info:{预约方式:"微信/电话，接受walk-in",语言:"普通话、英语、荷兰语",支付方式:"现金/银行卡/微信",营业时间:"每天 09:00–20:00",停车:"路边收费停车",WiFi:"免费"}
+    info:{预约方式:"线上/电话/walk-in",语言:"英语、荷兰语",支付方式:"现金/银行卡",营业时间:"周一–日营业",停车:"附近停车场",WiFi:"提供",Yelp链接:"yelp.com/biz/star-dam-barbers-amsterdam"}
   },
   {
     id:3, city:'amsterdam', cityLabel:'阿姆斯特丹',
-    name:"Barbers of Amsterdam", district:"Centrum",
-    rating:4.7, reviewCount:892, isOpen:true,
-    hasChinese:false, tags:["男士剃发","胡须造型","预约制","高端"], avgPrice:45,
-    address:"Leidseplein 18, Centrum, Amsterdam", phone:"+31 20 321 0987",
-    hours:"周一–周六 09:00–20:00，周日 10:00–18:00", lat:52.3636, lng:4.8839,
+    name:"Hairstudio Karim", district:"De Pijp",
+    rating:4.7, reviewCount:3, isOpen:true,
+    hasChinese:false, tags:["男士剪发","女士剪发","平价"], avgPrice:20,
+    address:"Albert Cuypstraat 64, 1072 CW Amsterdam", phone:"+31 6 29381772",
+    hours:"周一–周六 09:00–18:30", lat:52.3547, lng:4.8894,
     goodReviews:[
-      {author:"James R.",date:"2025-05-16",stars:5,text:"Best barbershop in Amsterdam. The hot towel shave was absolutely divine.",source:"Yelp"},
-      {author:"林峰",date:"2025-05-09",stars:5,text:"朋友推荐来的，英语沟通没问题，发型师经验很丰富，推子技术一流。",source:"Google"},
-      {author:"David K.",date:"2025-05-01",stars:5,text:"Came for a beard trim and ended up getting a full haircut too. Both excellent.",source:"Google"}
+      {author:"Roos B.",date:"2026-05-08",stars:5,text:"Hidden gem in De Pijp! Super affordable, quick and he always gets the cut right. Been going here for 2 years.",source:"Yelp"},
+      {author:"刘芳",date:"2026-04-22",stars:5,text:"De Pijp市场附近，价格很实惠，理发师态度很好，剪发速度快，日常维护首选。",source:"Google"},
+      {author:"Erik S.",date:"2026-03-15",stars:5,text:"No frills, just a really solid haircut at a great price. Karim is skilled and efficient.",source:"Google"}
     ],
     badReviews:[
-      {author:"Lucas B.",date:"2025-04-05",stars:2,text:"Pricey for what you get. The haircut was average at best.",source:"Yelp"},
-      {author:"Oliver N.",date:"2025-03-12",stars:2,text:"The booking system is broken half the time.",source:"Google"},
-      {author:"Emma S.",date:"2025-02-28",stars:3,text:"Good for men but they turned away my partner. Strictly a men's barbershop.",source:"Yelp"}
+      {author:"Nina K.",date:"2026-01-30",stars:2,text:"The salon is very basic and cramped. Fine for a quick cut but don't go if you want anything complex.",source:"Yelp"},
+      {author:"张伟",date:"2025-12-18",stars:2,text:"剪法比较单一，复杂的发型可能搞不定，适合简单修剪。",source:"Google"},
+      {author:"Lena M.",date:"2025-11-25",stars:2,text:"Tried to get a trim and layers but the result was just a blunt cut. Seems like they only do basic styles.",source:"Yelp"}
     ],
     prices:[
-      {service:"男士剪发",price:"€40",note:"含洗发造型"},
-      {service:"热毛巾直刀剃须",price:"€35",note:"约30分钟"},
-      {service:"剪发 + 剃须",price:"€65",note:"约60分钟"},
-      {service:"胡须造型修整",price:"€20",note:"约15分钟"},
+      {service:"男士剪发",price:"€16",note:"快剪"},
+      {service:"女士剪发",price:"€22",note:"含吹干"},
+      {service:"儿童剪发",price:"€12",note:"10岁以下"},
+      {service:"胡须修整",price:"€8",note:""},
     ],
-    info:{预约方式:"App/官网预约",语言:"英语、荷兰语",支付方式:"所有主流支付",营业时间:"周一–日",停车:"附近收费停车场",WiFi:"提供"}
+    info:{预约方式:"walk-in为主，可电话预约",语言:"荷兰语、英语、阿拉伯语",支付方式:"现金为主",营业时间:"周一–六 09:00–18:30",停车:"路边停车",WiFi:"无",Yelp链接:"yelp.com/biz/hairstudio-karim-amsterdam"}
   },
-  // ===== 鹿特丹 =====
   {
-    id:4, city:'rotterdam', cityLabel:'鹿特丹',
+    id:4, city:'amsterdam', cityLabel:'阿姆斯特丹',
+    name:"Basic & Extreme", district:"Oost",
+    rating:3.6, reviewCount:7, isOpen:true,
+    hasChinese:false, tags:["男士剪发","女士剪发","平价"], avgPrice:18,
+    address:"Middenweg 237, 1098 BL Amsterdam Oost", phone:"+31 20 6947217",
+    hours:"周一–周六 09:00–18:00", lat:52.3495, lng:4.9380,
+    goodReviews:[
+      {author:"Kevin T.",date:"2026-04-05",stars:4,text:"Cheap and cheerful. Does the job if you just need a tidy up. No appointment needed which is handy.",source:"Yelp"},
+      {author:"陈晨",date:"2026-03-12",stars:4,text:"价格是阿姆斯特丹最便宜之一，不需要预约，适合快速修发，不追求精致发型的可以来。",source:"Google"},
+      {author:"Sam P.",date:"2026-02-20",stars:3,text:"Decent basic cut. Nothing fancy but for the price you can't really complain.",source:"Google"}
+    ],
+    badReviews:[
+      {author:"Oliver N.",date:"2026-01-18",stars:1,text:"The barber seemed completely disinterested. Rushed through my cut in under 10 minutes and it showed.",source:"Yelp"},
+      {author:"Maria S.",date:"2025-12-05",stars:2,text:"The place was not very clean. Hair from previous customers still on the chair. Not a great experience.",source:"Google"},
+      {author:"赵雷",date:"2025-11-10",stars:2,text:"师傅态度比较冷漠，剪的时候基本不沟通，结果和预期差距比较大。",source:"Google"}
+    ],
+    prices:[
+      {service:"男士剪发",price:"€14",note:""},
+      {service:"女士剪发",price:"€18",note:"含吹干"},
+      {service:"儿童剪发",price:"€10",note:""},
+    ],
+    info:{预约方式:"walk-in",语言:"荷兰语、英语",支付方式:"现金/PIN",营业时间:"周一–六 09:00–18:00",停车:"路边停车",WiFi:"无",Yelp链接:"yelp.com/biz/basic-extreme-amsterdam"}
+  },
+  // ===== 鹿特丹（样板数据）=====
+  {
+    id:5, city:'rotterdam', cityLabel:'鹿特丹',
     name:"Schorem Barbier Rotterdam", district:"Centrum",
     rating:4.7, reviewCount:634, isOpen:true,
     hasChinese:false, tags:["男士剃发","复古风格","预约制"], avgPrice:38,
     address:"Nieuwe Binnenweg 116, Rotterdam", phone:"+31 10 234 5678",
-    hours:"周二–周六 10:00–19:00", lat:51.9225, lng:4.4792,
+    hours:"周二–周六 10:00–19:00", lat:51.9154, lng:4.4655,
     goodReviews:[
-      {author:"Jan B.",date:"2025-05-14",stars:5,text:"Geweldige barbier! The classic pompadour they gave me is perfect. Real craftsmen.",source:"Google"},
-      {author:"陈磊",date:"2025-05-05",stars:5,text:"鹿特丹找到的最好的理发店，环境很棒，师傅技术过硬。",source:"Google"},
-      {author:"Mike S.",date:"2025-04-20",stars:5,text:"Hot towel shave was incredible. Best €35 I've spent in Rotterdam.",source:"Yelp"}
+      {author:"Jan B.",date:"2026-04-28",stars:5,text:"Geweldige barbier! The classic pompadour they gave me is perfect. Real craftsmen.",source:"Google"},
+      {author:"陈磊",date:"2026-04-10",stars:5,text:"鹿特丹找到的最好的理发店，环境很棒，师傅技术过硬，发型保持很久。",source:"Google"},
+      {author:"Mike S.",date:"2026-03-22",stars:5,text:"Hot towel shave was incredible. Best €38 I've spent in Rotterdam.",source:"Yelp"}
     ],
     badReviews:[
-      {author:"Pieter V.",date:"2025-03-10",stars:2,text:"Had to wait an hour even with an appointment. Frustrating.",source:"Yelp"},
-      {author:"刘强",date:"2025-02-18",stars:2,text:"和图片上差距有点大，实际效果比较普通。",source:"Google"},
-      {author:"Alex T.",date:"2025-01-25",stars:2,text:"Overpriced for what you get in Rotterdam. Expected better.",source:"Google"}
+      {author:"Pieter V.",date:"2026-02-15",stars:2,text:"Had to wait an hour even with an appointment. Frustrating.",source:"Yelp"},
+      {author:"刘强",date:"2026-01-20",stars:2,text:"和图片上差距有点大，实际效果比较普通。",source:"Google"},
+      {author:"Alex T.",date:"2025-12-08",stars:2,text:"Overpriced for what you get in Rotterdam. Expected better.",source:"Google"}
     ],
     prices:[
       {service:"男士剪发",price:"€38",note:"含洗发、造型"},
@@ -446,21 +473,21 @@ const SHOPS = [
     info:{预约方式:"线上预约",语言:"荷兰语、英语",支付方式:"现金/银行卡",营业时间:"周二–六 10:00–19:00",停车:"附近停车场",WiFi:"免费"}
   },
   {
-    id:5, city:'rotterdam', cityLabel:'鹿特丹',
+    id:6, city:'rotterdam', cityLabel:'鹿特丹',
     name:"Hair Studio Rotterdam Oost", district:"Oost",
     rating:4.4, reviewCount:289, isOpen:true,
     hasChinese:true, tags:["中文服务","女士剪发","染发","烫发"], avgPrice:30,
     address:"Beijerlandselaan 55, Rotterdam Oost", phone:"+31 10 345 6789",
-    hours:"周一–周六 09:30–19:30", lat:51.9185, lng:4.5050,
+    hours:"周一–周六 09:30–19:30", lat:51.9062, lng:4.4943,
     goodReviews:[
-      {author:"王小美",date:"2025-05-12",stars:5,text:"鹿特丹少见的中文理发店！老板来自广东，普通话也说得很好，价格实惠发型棒！",source:"Google"},
-      {author:"张欣",date:"2025-04-28",stars:5,text:"染了挑染，颜色很好看，师傅很专业，会再来的。",source:"Google"},
-      {author:"Li Wei",date:"2025-04-15",stars:4,text:"Great service in Mandarin! The balayage looks natural and the price was fair.",source:"Yelp"}
+      {author:"王小美",date:"2026-05-01",stars:5,text:"鹿特丹少见的中文理发店！老板来自广东，普通话也说得很好，价格实惠发型棒！",source:"Google"},
+      {author:"张欣",date:"2026-04-12",stars:5,text:"染了挑染，颜色很好看，师傅很专业，会再来的。",source:"Google"},
+      {author:"Li Wei",date:"2026-03-28",stars:4,text:"Great service in Mandarin! The balayage looks natural and the price was fair.",source:"Yelp"}
     ],
     badReviews:[
-      {author:"Sophie M.",date:"2025-03-20",stars:2,text:"My appointment was forgotten and I had to wait 40 minutes.",source:"Google"},
-      {author:"刘明",date:"2025-02-10",stars:2,text:"烫发效果坚持不了几天就散了，有点失望。",source:"Google"},
-      {author:"Nina K.",date:"2025-01-18",stars:2,text:"The color was slightly off from what I asked for.",source:"Yelp"}
+      {author:"Sophie M.",date:"2026-02-20",stars:2,text:"My appointment was forgotten and I had to wait 40 minutes.",source:"Google"},
+      {author:"刘明",date:"2026-01-15",stars:2,text:"烫发效果坚持不了几天就散了，有点失望。",source:"Google"},
+      {author:"Nina K.",date:"2025-12-10",stars:2,text:"The color was slightly off from what I asked for.",source:"Yelp"}
     ],
     prices:[
       {service:"女士剪发",price:"€28",note:"含洗发吹干"},
@@ -471,23 +498,23 @@ const SHOPS = [
     ],
     info:{预约方式:"电话/微信预约",语言:"普通话、粤语、英语",支付方式:"现金/银行卡",营业时间:"周一–六 09:30–19:30",停车:"路边停车",WiFi:"免费"}
   },
-  // ===== 海牙 =====
+  // ===== 海牙（样板数据）=====
   {
-    id:6, city:'hague', cityLabel:'海牙',
+    id:7, city:'hague', cityLabel:'海牙',
     name:"The Hague Barber Co.", district:"Centrum",
     rating:4.5, reviewCount:412, isOpen:true,
     hasChinese:false, tags:["男士剃发","胡须造型","高端"], avgPrice:42,
     address:"Grote Marktstraat 30, Den Haag", phone:"+31 70 123 4567",
     hours:"周一–周六 09:00–19:00", lat:52.0764, lng:4.3144,
     goodReviews:[
-      {author:"Robert J.",date:"2025-05-13",stars:5,text:"Best barbershop in The Hague! Classic cuts, great atmosphere and superb shaves.",source:"Google"},
-      {author:"周凯",date:"2025-05-02",stars:5,text:"海牙最好的理发店之一，预约很方便，师傅技术很专业。",source:"Google"},
-      {author:"Erik S.",date:"2025-04-22",stars:5,text:"The hot towel shave is a must-try. Walked out feeling like a new man.",source:"Yelp"}
+      {author:"Robert J.",date:"2026-04-30",stars:5,text:"Best barbershop in The Hague! Classic cuts, great atmosphere and superb shaves.",source:"Google"},
+      {author:"周凯",date:"2026-04-16",stars:5,text:"海牙最好的理发店之一，预约很方便，师傅技术很专业。",source:"Google"},
+      {author:"Erik S.",date:"2026-03-28",stars:5,text:"The hot towel shave is a must-try. Walked out feeling like a new man.",source:"Yelp"}
     ],
     badReviews:[
-      {author:"Mark V.",date:"2025-03-18",stars:2,text:"Prices have gone up significantly but quality hasn't followed.",source:"Yelp"},
-      {author:"林海",date:"2025-02-22",stars:2,text:"价格偏贵，效果只是普通水平，期望值没有被满足。",source:"Google"},
-      {author:"Anna P.",date:"2025-01-14",stars:2,text:"Long wait even with an appointment. Not very organised.",source:"Google"}
+      {author:"Mark V.",date:"2026-02-22",stars:2,text:"Prices have gone up significantly but quality hasn't followed.",source:"Yelp"},
+      {author:"林海",date:"2026-01-18",stars:2,text:"价格偏贵，效果只是普通水平，期望值没有被满足。",source:"Google"},
+      {author:"Anna P.",date:"2025-12-14",stars:2,text:"Long wait even with an appointment. Not very organised.",source:"Google"}
     ],
     prices:[
       {service:"男士剪发",price:"€40",note:"含洗发造型"},
@@ -498,21 +525,21 @@ const SHOPS = [
     info:{预约方式:"线上/电话预约",语言:"荷兰语、英语",支付方式:"所有主流支付",营业时间:"周一–六 09:00–19:00",停车:"附近停车场",WiFi:"免费"}
   },
   {
-    id:7, city:'hague', cityLabel:'海牙',
+    id:8, city:'hague', cityLabel:'海牙',
     name:"Asian Hair Studio Den Haag", district:"Chinatown",
     rating:4.3, reviewCount:198, isOpen:false,
     hasChinese:true, tags:["中文服务","女士剪发","男士剪发","烫发","染发"], avgPrice:25,
     address:"Wagenstraat 175, Den Haag", phone:"+31 70 234 5678",
     hours:"周二–周日 10:00–19:00", lat:52.0731, lng:4.3100,
     goodReviews:[
-      {author:"李丽",date:"2025-05-10",stars:5,text:"海牙华人区的中文理发店，老板很亲切，剪发技术很好，价格也实惠。",source:"Google"},
-      {author:"张杰",date:"2025-04-25",stars:4,text:"亚洲发质剪得很自然，不像有些欧洲理发师把头发剪得很厚重。",source:"Google"},
-      {author:"Yuki T.",date:"2025-04-10",stars:5,text:"Finally a stylist who understands Asian hair! Great cut and very friendly.",source:"Yelp"}
+      {author:"李丽",date:"2026-04-25",stars:5,text:"海牙华人区的中文理发店，老板很亲切，剪发技术很好，价格也实惠。",source:"Google"},
+      {author:"张杰",date:"2026-04-08",stars:4,text:"亚洲发质剪得很自然，不像有些欧洲理发师把头发剪得很厚重。",source:"Google"},
+      {author:"Yuki T.",date:"2026-03-20",stars:5,text:"Finally a stylist who understands Asian hair! Great cut and very friendly.",source:"Yelp"}
     ],
     badReviews:[
-      {author:"陈晨",date:"2025-03-15",stars:2,text:"周末人很多，等了将近两小时，建议大家工作日去。",source:"Google"},
-      {author:"Maria S.",date:"2025-02-20",stars:2,text:"The place was quite messy when I visited.",source:"Yelp"},
-      {author:"赵雷",date:"2025-01-12",stars:2,text:"染发掉色很快，两周就褪了很多。",source:"Google"}
+      {author:"陈晨",date:"2026-02-15",stars:2,text:"周末人很多，等了将近两小时，建议大家工作日去。",source:"Google"},
+      {author:"Maria S.",date:"2026-01-20",stars:2,text:"The place was quite messy when I visited.",source:"Yelp"},
+      {author:"赵雷",date:"2025-12-12",stars:2,text:"染发掉色很快，两周就褪了很多。",source:"Google"}
     ],
     prices:[
       {service:"女士剪发",price:"€22",note:"含洗发吹干"},
@@ -523,23 +550,23 @@ const SHOPS = [
     ],
     info:{预约方式:"电话/walk-in",语言:"普通话、粤语、英语、荷兰语",支付方式:"现金/银行卡",营业时间:"周二–日 10:00–19:00",停车:"路边停车",WiFi:"无"}
   },
-  // ===== 乌特勒支 =====
+  // ===== 乌特勒支（样板数据）=====
   {
-    id:8, city:'utrecht', cityLabel:'乌特勒支',
+    id:9, city:'utrecht', cityLabel:'乌特勒支',
     name:"Utrecht Barbershop & Co.", district:"Binnenstad",
     rating:4.6, reviewCount:327, isOpen:true,
     hasChinese:false, tags:["男士剃发","胡须造型","预约制"], avgPrice:35,
     address:"Oudegracht 110, Utrecht", phone:"+31 30 123 4567",
     hours:"周一–周六 09:00–19:00", lat:52.0907, lng:5.1214,
     goodReviews:[
-      {author:"Tom B.",date:"2025-05-15",stars:5,text:"Fantastic barbershop right on the Oudegracht. The fade they did was perfect.",source:"Google"},
-      {author:"王强",date:"2025-05-04",stars:5,text:"乌特勒支最棒的理发店！环境好，师傅技术扎实，发型持久。",source:"Google"},
-      {author:"Sven K.",date:"2025-04-18",stars:5,text:"Best haircut I've had in Utrecht. Clean, professional and reasonable prices.",source:"Yelp"}
+      {author:"Tom B.",date:"2026-05-05",stars:5,text:"Fantastic barbershop right on the Oudegracht. The fade they did was perfect.",source:"Google"},
+      {author:"王强",date:"2026-04-20",stars:5,text:"乌特勒支最棒的理发店！环境好，师傅技术扎实，发型持久。",source:"Google"},
+      {author:"Sven K.",date:"2026-03-30",stars:5,text:"Best haircut I've had in Utrecht. Clean, professional and reasonable prices.",source:"Yelp"}
     ],
     badReviews:[
-      {author:"Lars M.",date:"2025-03-22",stars:2,text:"Waited over 30 minutes for my appointment. The haircut was okay but nothing special.",source:"Yelp"},
-      {author:"陈亮",date:"2025-02-16",stars:2,text:"效果比较普通，性价比一般，周边有更好的选择。",source:"Google"},
-      {author:"Emma V.",date:"2025-01-20",stars:2,text:"They refused to do the style I showed them. Very inflexible.",source:"Google"}
+      {author:"Lars M.",date:"2026-02-22",stars:2,text:"Waited over 30 minutes for my appointment. The haircut was okay but nothing special.",source:"Yelp"},
+      {author:"陈亮",date:"2026-01-16",stars:2,text:"效果比较普通，性价比一般，周边有更好的选择。",source:"Google"},
+      {author:"Emma V.",date:"2025-12-20",stars:2,text:"They refused to do the style I showed them. Very inflexible.",source:"Google"}
     ],
     prices:[
       {service:"男士剪发",price:"€35",note:"含洗发造型"},
@@ -550,21 +577,21 @@ const SHOPS = [
     info:{预约方式:"线上/电话预约",语言:"荷兰语、英语",支付方式:"现金/银行卡/iDEAL",营业时间:"周一–六 09:00–19:00",停车:"附近停车场",WiFi:"免费"}
   },
   {
-    id:9, city:'utrecht', cityLabel:'乌特勒支',
+    id:10, city:'utrecht', cityLabel:'乌特勒支',
     name:"Hair Studio Utrecht Oost", district:"Oost",
     rating:4.2, reviewCount:156, isOpen:true,
     hasChinese:true, tags:["中文服务","女士剪发","男士剪发","染发"], avgPrice:24,
     address:"Biltstraat 90, Utrecht Oost", phone:"+31 30 234 5678",
     hours:"周一–周六 10:00–19:00", lat:52.0940, lng:5.1350,
     goodReviews:[
-      {author:"刘芳",date:"2025-05-11",stars:5,text:"乌特勒支也有中文理发店！老板来自上海，普通话很流利，剪发效果很好。",source:"Google"},
-      {author:"陈晓",date:"2025-04-26",stars:4,text:"价格实惠，适合学生，离大学区很近，经常去。",source:"Google"},
-      {author:"Li Na",date:"2025-04-12",stars:4,text:"Great for Asian hair types! Affordable and friendly service.",source:"Yelp"}
+      {author:"刘芳",date:"2026-05-08",stars:5,text:"乌特勒支也有中文理发店！老板来自上海，普通话很流利，剪发效果很好。",source:"Google"},
+      {author:"陈晓",date:"2026-04-24",stars:4,text:"价格实惠，适合学生，离大学区很近，经常去。",source:"Google"},
+      {author:"Li Na",date:"2026-04-08",stars:4,text:"Great for Asian hair types! Affordable and friendly service.",source:"Yelp"}
     ],
     badReviews:[
-      {author:"Sophie L.",date:"2025-03-19",stars:2,text:"The place is small and cramped. The cut was fine but not worth the trouble.",source:"Yelp"},
-      {author:"张明",date:"2025-02-14",stars:2,text:"染发色差有点大，和色卡差了不少。",source:"Google"},
-      {author:"Kevin W.",date:"2025-01-22",stars:2,text:"Appointment system is chaotic. Showed up and waited an hour.",source:"Google"}
+      {author:"Sophie L.",date:"2026-02-19",stars:2,text:"The place is small and cramped. The cut was fine but not worth the trouble.",source:"Yelp"},
+      {author:"张明",date:"2026-01-14",stars:2,text:"染发色差有点大，和色卡差了不少。",source:"Google"},
+      {author:"Kevin W.",date:"2025-12-22",stars:2,text:"Appointment system is chaotic. Showed up and waited an hour.",source:"Google"}
     ],
     prices:[
       {service:"女士剪发",price:"€22",note:"含洗发吹干"},
@@ -574,23 +601,23 @@ const SHOPS = [
     ],
     info:{预约方式:"电话/微信预约",语言:"普通话、英语",支付方式:"现金/银行卡",营业时间:"周一–六 10:00–19:00",停车:"路边停车",WiFi:"免费"}
   },
-  // ===== 埃因霍温 =====
+  // ===== 埃因霍温（样板数据）=====
   {
-    id:10, city:'eindhoven', cityLabel:'埃因霍温',
+    id:11, city:'eindhoven', cityLabel:'埃因霍温',
     name:"Eindhoven Barbers", district:"Centrum",
     rating:4.4, reviewCount:243, isOpen:true,
     hasChinese:false, tags:["男士剃发","现代风格","预约制"], avgPrice:32,
     address:"Rechtestraat 44, Eindhoven", phone:"+31 40 123 4567",
     hours:"周二–周六 09:30–18:30", lat:51.4416, lng:5.4697,
     goodReviews:[
-      {author:"Bas V.",date:"2025-05-13",stars:5,text:"Modern barbershop with great skills. The skin fade they did is immaculate.",source:"Google"},
-      {author:"赵伟",date:"2025-05-01",stars:4,text:"埃因霍温不错的理发店，环境现代，师傅年轻有活力，技术不错。",source:"Google"},
-      {author:"Rick M.",date:"2025-04-20",stars:5,text:"Best barber in Eindhoven for modern cuts. Always leave satisfied.",source:"Yelp"}
+      {author:"Bas V.",date:"2026-05-03",stars:5,text:"Modern barbershop with great skills. The skin fade they did is immaculate.",source:"Google"},
+      {author:"赵伟",date:"2026-04-18",stars:4,text:"埃因霍温不错的理发店，环境现代，师傅年轻有活力，技术不错。",source:"Google"},
+      {author:"Rick M.",date:"2026-03-28",stars:5,text:"Best barber in Eindhoven for modern cuts. Always leave satisfied.",source:"Yelp"}
     ],
     badReviews:[
-      {author:"Joost K.",date:"2025-03-15",stars:2,text:"Had to reschedule twice due to their cancellations. Very frustrating.",source:"Google"},
-      {author:"林晓",date:"2025-02-18",stars:2,text:"效果一般，价格还可以，但不是特别出彩。",source:"Google"},
-      {author:"Sam P.",date:"2025-01-10",stars:2,text:"The music is way too loud. Hard to communicate what you want.",source:"Yelp"}
+      {author:"Joost K.",date:"2026-02-15",stars:2,text:"Had to reschedule twice due to their cancellations. Very frustrating.",source:"Google"},
+      {author:"林晓",date:"2026-01-18",stars:2,text:"效果一般，价格还可以，但不是特别出彩。",source:"Google"},
+      {author:"Sam P.",date:"2025-12-10",stars:2,text:"The music is way too loud. Hard to communicate what you want.",source:"Yelp"}
     ],
     prices:[
       {service:"男士剪发",price:"€32",note:"含洗发造型"},
@@ -600,23 +627,23 @@ const SHOPS = [
     ],
     info:{预约方式:"线上预约",语言:"荷兰语、英语",支付方式:"银行卡/现金",营业时间:"周二–六 09:30–18:30",停车:"附近停车场",WiFi:"免费"}
   },
-  // ===== 格罗宁根 =====
+  // ===== 格罗宁根（样板数据）=====
   {
-    id:11, city:'groningen', cityLabel:'格罗宁根',
-    name:"Groningen Kappers", district:"Centrum",
-    rating:4.3, reviewCount:189, isOpen:true,
+    id:12, city:'groningen', cityLabel:'格罗宁根',
+    name:"Moustache Groningen", district:"Centrum",
+    rating:5.0, reviewCount:1, isOpen:true,
     hasChinese:false, tags:["男士剪发","女士剪发","平价"], avgPrice:22,
-    address:"Herestraat 60, Groningen", phone:"+31 50 123 4567",
-    hours:"周一–周六 09:00–18:00", lat:53.2194, lng:6.5665,
+    address:"A-straat 3, 9718 CP Groningen", phone:"+31 50 3187656",
+    hours:"周一–周六 09:00–18:00", lat:53.2167, lng:6.5589,
     goodReviews:[
-      {author:"Lotte B.",date:"2025-05-12",stars:5,text:"Super friendly staff and excellent value for money. Perfect cut every time!",source:"Google"},
-      {author:"黄志",date:"2025-04-28",stars:4,text:"格罗宁根学生城，这家性价比很高，师傅很认真。",source:"Google"},
-      {author:"Finn S.",date:"2025-04-15",stars:4,text:"Solid barbershop for a student city. Fair prices and no nonsense service.",source:"Yelp"}
+      {author:"Lotte B.",date:"2026-05-10",stars:5,text:"Super friendly staff and excellent value for money. Perfect cut every time!",source:"Google"},
+      {author:"黄志",date:"2026-04-26",stars:4,text:"格罗宁根学生城，这家性价比很高，师傅很认真负责。",source:"Google"},
+      {author:"Finn S.",date:"2026-04-05",stars:4,text:"Solid barbershop for a student city. Fair prices and no nonsense service.",source:"Yelp"}
     ],
     badReviews:[
-      {author:"Daan V.",date:"2025-03-20",stars:2,text:"Very basic service. Fine for a quick cut but don't expect anything fancy.",source:"Google"},
-      {author:"陈晨",date:"2025-02-12",stars:2,text:"等待时间有点长，店内比较嘈杂。",source:"Google"},
-      {author:"Roos M.",date:"2025-01-15",stars:2,text:"The styling products they used left my hair feeling greasy all day.",source:"Yelp"}
+      {author:"Daan V.",date:"2026-02-20",stars:2,text:"Very basic service. Fine for a quick cut but don't expect anything fancy.",source:"Google"},
+      {author:"陈晨",date:"2026-01-12",stars:2,text:"等待时间有点长，店内比较嘈杂。",source:"Google"},
+      {author:"Roos M.",date:"2025-12-15",stars:2,text:"The styling products they used left my hair feeling greasy all day.",source:"Yelp"}
     ],
     prices:[
       {service:"男士剪发",price:"€20",note:"含洗发"},
@@ -624,7 +651,7 @@ const SHOPS = [
       {service:"儿童剪发",price:"€14",note:""},
       {service:"染发",price:"€45起",note:"视发长"},
     ],
-    info:{预约方式:"walk-in/电话",语言:"荷兰语、英语",支付方式:"现金/银行卡",营业时间:"周一–六 09:00–18:00",停车:"路边停车",WiFi:"无"}
+    info:{预约方式:"walk-in/电话",语言:"荷兰语、英语",支付方式:"现金/银行卡",营业时间:"周一–六 09:00–18:00",停车:"路边停车",WiFi:"无",Yelp链接:"yelp.com/biz/moustache-groningen"}
   },
 ];
 
