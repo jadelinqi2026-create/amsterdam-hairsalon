@@ -460,42 +460,116 @@ function renderUserReviews(shopId) {
 // ★ 其他荷兰城市：样板数据占位，接入 Google Places API 后替换
 // ============================================================
 const SHOPS = [
-  // ===== 上海（样板数据，待接入大众点评）=====
+  // ===== 上海黄浦区（高德地图真实数据，评分4.6+）=====
   {
-    id:101, city:'shanghai', cityLabel:'上海',
-    name:"TBD 发型工作室", district:"静安区",
-    rating:0, reviewCount:0, isOpen:true,
-    hasChinese:true, tags:["女士剪发","男士剪发","挑染","挂耳染","渐变色","拉直","烫卷"], avgPrice:0,
-    address:"TBD", phone:"TBD",
-    hours:"TBD", lat:31.2304, lng:121.4737,
+    id:200, city:'shanghai', cityLabel:'上海',
+    name:"ECO salon人民广场店", district:"黄浦区",
+    rating:4.8, reviewCount:0, isOpen:true,
+    hasChinese:true, tags:["女士剪发","男士剪发"], avgPrice:230,
+    address:"上海人民广场地铁站6号口下电梯左转弯3米, 黄浦区", phone:"17701626510",
+    hours:"TBD", lat:31.233926, lng:121.473991,
     goodReviews:[], badReviews:[],
-    prices:[
-      {service:"女士剪发",price:"TBD",note:""},
-      {service:"男士剪发",price:"TBD",note:""},
-      {service:"挑染",price:"TBD",note:""},
-      {service:"挂耳染",price:"TBD",note:""},
-      {service:"渐变色/Balayage",price:"TBD",note:""},
-      {service:"拉直",price:"TBD",note:""},
-      {service:"烫卷",price:"TBD",note:""},
-    ],
-    info:{数据来源:"待接入大众点评/高德",备注:"如你有推荐的上海理发店，欢迎在下方提交评价！"}
+    prices:[{service:"剪发",price:"TBD",note:""},{service:"染发",price:"TBD",note:""},{service:"烫发",price:"TBD",note:""}],
+    info:{数据来源:"高德地图（真实）",均消:"¥230",电话:"17701626510",营业时间:"TBD",备注:"欢迎在用户评价Tab提交你的真实体验"}
   },
   {
-    id:102, city:'shanghai', cityLabel:'上海',
-    name:"TBD 造型店", district:"徐汇区",
-    rating:0, reviewCount:0, isOpen:true,
-    hasChinese:true, tags:["女士剪发","单色染","挑染","数字烫","漂白脱色"], avgPrice:0,
-    address:"TBD", phone:"TBD",
-    hours:"TBD", lat:31.1890, lng:121.4370,
+    id:201, city:'shanghai', cityLabel:'上海',
+    name:"华安美丽馆(南京西路店)", district:"黄浦区",
+    rating:4.8, reviewCount:0, isOpen:true,
+    hasChinese:true, tags:["女士剪发","男士剪发"], avgPrice:0,
+    address:"南京西路110号(人民广场地铁站8号口步行140米), 黄浦区", phone:"021-63279718",
+    hours:"TBD", lat:31.234129, lng:121.472493,
     goodReviews:[], badReviews:[],
-    prices:[
-      {service:"女士剪发",price:"TBD",note:""},
-      {service:"单色染",price:"TBD",note:""},
-      {service:"挑染",price:"TBD",note:""},
-      {service:"数字烫",price:"TBD",note:""},
-      {service:"漂白脱色",price:"TBD",note:""},
-    ],
-    info:{数据来源:"待接入大众点评/高德",备注:"如你有推荐的上海理发店，欢迎在下方提交评价！"}
+    prices:[{service:"剪发",price:"TBD",note:""},{service:"染发",price:"TBD",note:""},{service:"烫发",price:"TBD",note:""}],
+    info:{数据来源:"高德地图（真实）",均消:"TBD",电话:"021-63279718",营业时间:"TBD",备注:"欢迎在用户评价Tab提交你的真实体验"}
+  },
+  {
+    id:203, city:'shanghai', cityLabel:'上海',
+    name:"东方麒麟·潘多拉SALON(淮海中路店)", district:"黄浦区",
+    rating:4.8, reviewCount:0, isOpen:true,
+    hasChinese:true, tags:["女士剪发","男士剪发"], avgPrice:270,
+    address:"淮海中路755号4层F4009商铺, 黄浦区", phone:"13585755851",
+    hours:"TBD", lat:31.218817, lng:121.464265,
+    goodReviews:[], badReviews:[],
+    prices:[{service:"剪发",price:"TBD",note:""},{service:"染发",price:"TBD",note:""},{service:"烫发",price:"TBD",note:""}],
+    info:{数据来源:"高德地图（真实）",均消:"¥270",电话:"13585755851",营业时间:"TBD",备注:"欢迎在用户评价Tab提交你的真实体验"}
+  },
+  {
+    id:204, city:'shanghai', cityLabel:'上海',
+    name:"潘多拉Hair salon(人民广场店)", district:"黄浦区",
+    rating:4.7, reviewCount:0, isOpen:true,
+    hasChinese:true, tags:["女士剪发","男士剪发"], avgPrice:240,
+    address:"汉口路547号(南京东路地铁站4号口步行420米), 黄浦区", phone:"17821962742",
+    hours:"TBD", lat:31.234067, lng:121.479922,
+    goodReviews:[], badReviews:[],
+    prices:[{service:"剪发",price:"TBD",note:""},{service:"染发",price:"TBD",note:""},{service:"烫发",price:"TBD",note:""}],
+    info:{数据来源:"高德地图（真实）",均消:"¥240",电话:"17821962742",营业时间:"TBD",备注:"欢迎在用户评价Tab提交你的真实体验"}
+  },
+  {
+    id:205, city:'shanghai', cityLabel:'上海',
+    name:"镁连社·美联社(人民广场店)", district:"黄浦区",
+    rating:4.7, reviewCount:0, isOpen:true,
+    hasChinese:true, tags:["女士剪发","男士剪发"], avgPrice:102,
+    address:"福州路518号二层(瑞幸咖啡旁楼梯上), 黄浦区", phone:"19121934054",
+    hours:"TBD", lat:31.233476, lng:121.480614,
+    goodReviews:[], badReviews:[],
+    prices:[{service:"剪发",price:"TBD",note:""},{service:"染发",price:"TBD",note:""},{service:"烫发",price:"TBD",note:""}],
+    info:{数据来源:"高德地图（真实）",均消:"¥102",电话:"19121934054",营业时间:"TBD",备注:"欢迎在用户评价Tab提交你的真实体验"}
+  },
+  {
+    id:206, city:'shanghai', cityLabel:'上海',
+    name:"何绮形象设计(北京西路店)", district:"黄浦区",
+    rating:4.7, reviewCount:0, isOpen:true,
+    hasChinese:true, tags:["女士剪发","男士剪发"], avgPrice:168,
+    address:"北京西路231号(新闸路地铁站6号口步行370米), 黄浦区", phone:"13918513901",
+    hours:"TBD", lat:31.235744, lng:121.469465,
+    goodReviews:[], badReviews:[],
+    prices:[{service:"剪发",price:"TBD",note:""},{service:"染发",price:"TBD",note:""},{service:"烫发",price:"TBD",note:""}],
+    info:{数据来源:"高德地图（真实）",均消:"¥168",电话:"13918513901",营业时间:"TBD",备注:"欢迎在用户评价Tab提交你的真实体验"}
+  },
+  {
+    id:207, city:'shanghai', cityLabel:'上海',
+    name:"藤野造型人民广场店", district:"黄浦区",
+    rating:4.6, reviewCount:0, isOpen:true,
+    hasChinese:true, tags:["女士剪发","男士剪发"], avgPrice:186,
+    address:"汉口路650号亚洲大厦21楼, 黄浦区", phone:"17303030047",
+    hours:"TBD", lat:31.233816, lng:121.477957,
+    goodReviews:[], badReviews:[],
+    prices:[{service:"剪发",price:"TBD",note:""},{service:"染发",price:"TBD",note:""},{service:"烫发",price:"TBD",note:""}],
+    info:{数据来源:"高德地图（真实）",均消:"¥186",电话:"17303030047",营业时间:"TBD",备注:"欢迎在用户评价Tab提交你的真实体验"}
+  },
+  {
+    id:208, city:'shanghai', cityLabel:'上海',
+    name:"雅仕专业美发造型(淮海中路店)", district:"黄浦区",
+    rating:4.6, reviewCount:0, isOpen:true,
+    hasChinese:true, tags:["女士剪发","男士剪发"], avgPrice:392,
+    address:"淮海中路八号兰生大厦一楼半(大世界地铁站6号口步行110米), 黄浦区", phone:"021-64456640",
+    hours:"TBD", lat:31.225934, lng:121.479656,
+    goodReviews:[], badReviews:[],
+    prices:[{service:"剪发",price:"TBD",note:""},{service:"染发",price:"TBD",note:""},{service:"烫发",price:"TBD",note:""}],
+    info:{数据来源:"高德地图（真实）",均消:"¥392",电话:"021-64456640",营业时间:"TBD",备注:"欢迎在用户评价Tab提交你的真实体验"}
+  },
+  {
+    id:209, city:'shanghai', cityLabel:'上海',
+    name:"VIMhairsalon(新天地旗舰店)", district:"黄浦区",
+    rating:4.6, reviewCount:0, isOpen:true,
+    hasChinese:true, tags:["女士剪发","男士剪发"], avgPrice:489,
+    address:"兴业路156弄2号2a, 黄浦区", phone:"15221861368",
+    hours:"TBD", lat:31.219854, lng:121.474144,
+    goodReviews:[], badReviews:[],
+    prices:[{service:"剪发",price:"TBD",note:""},{service:"染发",price:"TBD",note:""},{service:"烫发",price:"TBD",note:""}],
+    info:{数据来源:"高德地图（真实）",均消:"¥489",电话:"15221861368",营业时间:"TBD",备注:"欢迎在用户评价Tab提交你的真实体验"}
+  },
+  {
+    id:210, city:'shanghai', cityLabel:'上海',
+    name:"藤野造型人民广场店", district:"黄浦区",
+    rating:4.6, reviewCount:0, isOpen:true,
+    hasChinese:true, tags:["女士剪发","男士剪发"], avgPrice:186,
+    address:"汉口路650号亚洲大厦21楼, 黄浦区", phone:"17303030047",
+    hours:"TBD", lat:31.233816, lng:121.477957,
+    goodReviews:[], badReviews:[],
+    prices:[{service:"剪发",price:"TBD",note:""},{service:"染发",price:"TBD",note:""},{service:"烫发",price:"TBD",note:""}],
+    info:{数据来源:"高德地图（真实）",均消:"¥186",电话:"17303030047",营业时间:"TBD",备注:"欢迎在用户评价Tab提交你的真实体验"}
   },
   // ===== 阿姆斯特丹（真实 Yelp 数据）=====
   {
