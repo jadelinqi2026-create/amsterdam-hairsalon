@@ -3,366 +3,211 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>阿姆斯特丹理发店查找器</title>
-
-  <!-- Leaflet.js (OpenStreetMap) -->
+  <title>荷兰理发店查找器</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
-      background: #f5f5f0;
-      color: #222;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
+      background: #f5f5f0; color: #222;
+      height: 100vh; display: flex; flex-direction: column; overflow: hidden;
     }
 
-    /* ===== 顶栏 ===== */
+    /* 顶栏 */
     header {
-      background: #1a1a2e;
-      color: #fff;
-      padding: 14px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-shrink: 0;
-      box-shadow: 0 2px 8px rgba(0,0,0,.3);
-      z-index: 1000;
+      background: #1a1a2e; color: #fff;
+      padding: 14px 24px; display: flex; align-items: center;
+      justify-content: space-between; flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,.3); z-index: 1000;
     }
-    header h1 { font-size: 1.2rem; font-weight: 700; letter-spacing: .5px; white-space: nowrap; }
+    header h1 { font-size: 1.2rem; font-weight: 700; white-space: nowrap; }
     header h1 span { color: #f5a623; }
-
-    .search-bar {
-      display: flex;
-      gap: 8px;
-      flex: 1;
-      max-width: 420px;
-      margin: 0 24px;
-    }
+    .search-bar { display: flex; gap: 8px; flex: 1; max-width: 420px; margin: 0 24px; }
     .search-bar input {
-      flex: 1;
-      padding: 8px 14px;
-      border: none;
-      border-radius: 20px;
-      font-size: .9rem;
-      outline: none;
+      flex: 1; padding: 8px 14px; border: none;
+      border-radius: 20px; font-size: .9rem; outline: none;
     }
     .search-bar button {
-      padding: 8px 18px;
-      background: #f5a623;
-      border: none;
-      border-radius: 20px;
-      font-weight: 600;
-      cursor: pointer;
-      color: #1a1a2e;
-      font-size: .85rem;
-      transition: background .2s;
+      padding: 8px 18px; background: #f5a623; border: none;
+      border-radius: 20px; font-weight: 600; cursor: pointer;
+      color: #1a1a2e; font-size: .85rem; transition: background .2s;
     }
     .search-bar button:hover { background: #e09500; }
-
     .view-toggle { display: flex; gap: 6px; }
     .view-toggle button {
-      padding: 7px 16px;
-      border: 1.5px solid #fff3;
-      background: transparent;
-      color: #fff;
-      border-radius: 16px;
-      cursor: pointer;
-      font-size: .82rem;
-      transition: all .2s;
-      white-space: nowrap;
+      padding: 7px 16px; border: 1.5px solid #fff3;
+      background: transparent; color: #fff; border-radius: 16px;
+      cursor: pointer; font-size: .82rem; transition: all .2s; white-space: nowrap;
     }
-    .view-toggle button.active {
-      background: #f5a623;
-      border-color: #f5a623;
-      color: #1a1a2e;
-      font-weight: 700;
-    }
+    .view-toggle button.active { background: #f5a623; border-color: #f5a623; color: #1a1a2e; font-weight: 700; }
 
-    /* ===== 筛选栏 ===== */
+    /* 筛选栏 */
     .filter-bar {
-      background: #fff;
-      padding: 10px 24px;
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      flex-shrink: 0;
-      border-bottom: 1px solid #e0e0d8;
-      overflow-x: auto;
-      z-index: 999;
+      background: #fff; padding: 10px 24px;
+      display: flex; gap: 8px; align-items: center;
+      flex-shrink: 0; border-bottom: 1px solid #e0e0d8;
+      overflow-x: auto; z-index: 999; flex-wrap: wrap;
     }
     .filter-bar::-webkit-scrollbar { height: 3px; }
     .filter-bar::-webkit-scrollbar-thumb { background: #ddd; border-radius: 2px; }
-    .filter-bar span { font-size: .82rem; color: #888; white-space: nowrap; }
+    .filter-group { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+    .filter-group-label {
+      font-size: .75rem; color: #aaa; font-weight: 600;
+      text-transform: uppercase; letter-spacing: .4px; white-space: nowrap;
+      padding-right: 2px;
+    }
     .filter-chip {
-      padding: 5px 14px;
-      border-radius: 16px;
-      border: 1.5px solid #ddd;
-      background: #fff;
-      font-size: .82rem;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all .2s;
-      user-select: none;
+      padding: 5px 13px; border-radius: 16px;
+      border: 1.5px solid #ddd; background: #fff;
+      font-size: .82rem; cursor: pointer; white-space: nowrap;
+      transition: all .18s; user-select: none;
     }
-    .filter-chip:hover, .filter-chip.active {
-      background: #1a1a2e;
-      color: #fff;
-      border-color: #1a1a2e;
+    .filter-chip:hover { border-color: #1a1a2e; color: #1a1a2e; }
+    .filter-chip.active { background: #1a1a2e; color: #fff; border-color: #1a1a2e; }
+    .filter-divider { width: 1px; height: 22px; background: #e0e0d8; margin: 0 4px; flex-shrink: 0; }
+    .filter-clear {
+      padding: 5px 12px; border-radius: 16px;
+      border: 1.5px solid #f5a623; background: #fff;
+      color: #f5a623; font-size: .78rem; cursor: pointer;
+      white-space: nowrap; transition: all .18s; font-weight: 600;
+      display: none;
     }
+    .filter-clear.visible { display: block; }
+    .filter-clear:hover { background: #f5a623; color: #fff; }
 
-    /* ===== 主体 ===== */
-    .main {
-      display: flex;
-      flex: 1;
-      overflow: hidden;
-      position: relative;
-    }
+    /* 主体 */
+    .main { display: flex; flex: 1; overflow: hidden; position: relative; }
 
-    /* ===== 列表面板 ===== */
+    /* 列表面板 */
     .list-panel {
-      width: 360px;
-      flex-shrink: 0;
-      overflow-y: auto;
-      background: #f5f5f0;
-      padding: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      z-index: 10;
+      width: 360px; flex-shrink: 0; overflow-y: auto;
+      background: #f5f5f0; padding: 14px;
+      display: flex; flex-direction: column; gap: 12px; z-index: 10;
     }
     .list-panel::-webkit-scrollbar { width: 4px; }
     .list-panel::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
-
     .result-count { font-size: .8rem; color: #888; padding: 2px 0 4px; }
 
     /* 卡片视图 */
     body.card-view .list-panel {
-      width: 100%;
-      flex-direction: row;
-      flex-wrap: wrap;
-      align-content: flex-start;
-      padding: 20px;
-      gap: 16px;
+      width: 100%; flex-direction: row; flex-wrap: wrap;
+      align-content: flex-start; padding: 20px; gap: 16px;
     }
     body.card-view .map-panel { display: none; }
     body.card-view .shop-card { width: calc(33.33% - 11px); min-width: 260px; }
     body.card-view .result-count { width: 100%; }
 
-    /* ===== 店铺卡片 ===== */
+    /* 店铺卡片 */
     .shop-card {
-      background: #fff;
-      border-radius: 14px;
-      padding: 15px;
-      cursor: pointer;
-      box-shadow: 0 2px 8px rgba(0,0,0,.06);
-      border: 2px solid transparent;
-      transition: all .2s;
+      background: #fff; border-radius: 14px; padding: 15px;
+      cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.06);
+      border: 2px solid transparent; transition: all .2s;
     }
     .shop-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,.12); transform: translateY(-2px); }
     .shop-card.active { border-color: #f5a623; box-shadow: 0 4px 18px rgba(245,166,35,.25); }
-
     .shop-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 7px; }
     .shop-name { font-size: .95rem; font-weight: 700; color: #1a1a2e; line-height: 1.3; }
     .shop-badge {
-      font-size: .68rem;
-      padding: 2px 7px;
-      border-radius: 10px;
-      white-space: nowrap;
-      margin-left: 6px;
-      flex-shrink: 0;
-      margin-top: 2px;
+      font-size: .68rem; padding: 2px 7px; border-radius: 10px;
+      white-space: nowrap; margin-left: 6px; flex-shrink: 0; margin-top: 2px;
     }
     .badge-open { background: #e8f5e9; color: #2e7d32; }
     .badge-closed { background: #ffebee; color: #c62828; }
-
     .shop-rating { display: flex; align-items: center; gap: 5px; margin-bottom: 5px; }
     .stars { color: #f5a623; font-size: .85rem; }
     .rating-num { font-weight: 700; color: #333; font-size: .88rem; }
     .review-count { font-size: .75rem; color: #888; }
-
     .shop-info { font-size: .78rem; color: #666; line-height: 1.8; }
     .shop-info span { margin-right: 10px; }
-
     .shop-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
-    .shop-tag {
-      font-size: .7rem;
-      padding: 2px 7px;
-      background: #f0f0ec;
-      border-radius: 7px;
-      color: #555;
-    }
+    .shop-tag { font-size: .7rem; padding: 2px 7px; background: #f0f0ec; border-radius: 7px; color: #555; }
     .shop-tag-cn { background: #fff3cd; color: #856404; }
-
-    /* ===== 地图面板 ===== */
-    .map-panel {
-      flex: 1;
-      position: relative;
-    }
-    #leafletMap {
-      width: 100%;
-      height: 100%;
+    .shop-tag-city {
+      font-size: .7rem; padding: 2px 7px; border-radius: 7px;
+      background: #e3f2fd; color: #1565c0; font-weight: 600;
     }
 
-    /* 自定义地图标记 */
+    /* 地图面板 */
+    .map-panel { flex: 1; position: relative; }
+    #leafletMap { width: 100%; height: 100%; }
+
+    /* 地图标记 */
     .map-marker {
-      background: #1a1a2e;
-      color: #fff;
-      border-radius: 50% 50% 50% 0;
-      transform: rotate(-45deg);
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 3px 10px rgba(0,0,0,.3);
-      border: 2px solid #fff;
-      cursor: pointer;
-      transition: background .2s;
+      background: #1a1a2e; color: #fff;
+      border-radius: 50% 50% 50% 0; transform: rotate(-45deg);
+      width: 32px; height: 32px; display: flex; align-items: center;
+      justify-content: center; box-shadow: 0 3px 10px rgba(0,0,0,.3);
+      border: 2px solid #fff; cursor: pointer; transition: background .2s;
     }
     .map-marker.active-marker { background: #f5a623; }
-    .map-marker span {
-      transform: rotate(45deg);
-      font-size: 14px;
-      line-height: 1;
-    }
+    .map-marker span { transform: rotate(45deg); font-size: 14px; line-height: 1; }
 
-    /* Leaflet popup 自定义 */
-    .leaflet-popup-content-wrapper {
-      border-radius: 12px !important;
-      box-shadow: 0 8px 24px rgba(0,0,0,.15) !important;
-      padding: 0 !important;
-      overflow: hidden;
-    }
-    .leaflet-popup-content {
-      margin: 0 !important;
-      width: 240px !important;
-    }
-    .popup-inner {
-      padding: 14px 16px;
-    }
+    /* Leaflet popup */
+    .leaflet-popup-content-wrapper { border-radius: 12px !important; box-shadow: 0 8px 24px rgba(0,0,0,.15) !important; padding: 0 !important; overflow: hidden; }
+    .leaflet-popup-content { margin: 0 !important; width: 240px !important; }
+    .popup-inner { padding: 14px 16px; }
     .popup-name { font-weight: 700; font-size: .95rem; color: #1a1a2e; margin-bottom: 4px; }
     .popup-rating { font-size: .82rem; color: #666; margin-bottom: 4px; }
     .popup-addr { font-size: .78rem; color: #888; margin-bottom: 10px; }
     .popup-btn {
-      width: 100%;
-      padding: 8px;
-      background: #1a1a2e;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-size: .82rem;
-      cursor: pointer;
-      font-weight: 600;
-      transition: background .2s;
+      width: 100%; padding: 8px; background: #1a1a2e; color: #fff;
+      border: none; border-radius: 8px; font-size: .82rem;
+      cursor: pointer; font-weight: 600; transition: background .2s;
     }
     .popup-btn:hover { background: #f5a623; color: #1a1a2e; }
 
-    /* ===== 详情弹窗 ===== */
+    /* 详情弹窗 */
     .detail-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 2000;
-      background: rgba(0,0,0,.55);
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
+      display: none; position: fixed; inset: 0; z-index: 2000;
+      background: rgba(0,0,0,.55); justify-content: center;
+      align-items: center; padding: 20px;
     }
     .detail-overlay.show { display: flex; }
-
     .detail-panel {
-      background: #fff;
-      border-radius: 20px;
-      max-width: 680px;
-      width: 100%;
-      max-height: 88vh;
-      overflow-y: auto;
-      position: relative;
+      background: #fff; border-radius: 20px; max-width: 680px;
+      width: 100%; max-height: 88vh; overflow-y: auto; position: relative;
       box-shadow: 0 20px 60px rgba(0,0,0,.25);
     }
     .detail-panel::-webkit-scrollbar { width: 4px; }
     .detail-panel::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
-
-    .detail-header {
-      background: #1a1a2e;
-      color: #fff;
-      padding: 22px 28px 18px;
-      border-radius: 20px 20px 0 0;
-    }
+    .detail-header { background: #1a1a2e; color: #fff; padding: 22px 28px 18px; border-radius: 20px 20px 0 0; }
     .detail-header h2 { font-size: 1.25rem; margin-bottom: 4px; }
     .dh-status { display: inline-block; font-size: .72rem; padding: 2px 8px; border-radius: 10px; margin-bottom: 8px; }
     .dh-open { background: #4caf50; }
     .dh-closed { background: #ef5350; }
     .detail-header .meta { font-size: .82rem; color: #99a; display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: 6px; }
-
     .close-btn {
-      position: absolute;
-      top: 14px; right: 18px;
-      background: rgba(255,255,255,.15);
-      border: none;
-      color: #fff;
-      width: 30px; height: 30px;
-      border-radius: 50%;
-      font-size: 1rem;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
+      position: absolute; top: 14px; right: 18px;
+      background: rgba(255,255,255,.15); border: none; color: #fff;
+      width: 30px; height: 30px; border-radius: 50%; font-size: 1rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
       transition: background .2s;
     }
     .close-btn:hover { background: rgba(255,255,255,.3); }
-
     .detail-body { padding: 22px 28px; }
-
-    .tab-nav {
-      display: flex;
-      border-bottom: 2px solid #f0f0ec;
-      margin-bottom: 18px;
-    }
+    .tab-nav { display: flex; border-bottom: 2px solid #f0f0ec; margin-bottom: 18px; }
     .tab-btn {
-      padding: 9px 18px;
-      background: none;
-      border: none;
-      font-size: .88rem;
-      cursor: pointer;
-      color: #999;
-      border-bottom: 2px solid transparent;
-      margin-bottom: -2px;
-      font-weight: 500;
-      transition: all .2s;
+      padding: 9px 18px; background: none; border: none; font-size: .88rem;
+      cursor: pointer; color: #999; border-bottom: 2px solid transparent;
+      margin-bottom: -2px; font-weight: 500; transition: all .2s;
     }
     .tab-btn.active { color: #1a1a2e; border-bottom-color: #f5a623; font-weight: 700; }
-
     .tab-content { display: none; }
     .tab-content.active { display: block; }
-
-    /* 评价 */
     .review-section { margin-bottom: 22px; }
     .review-section h3 { font-size: .85rem; font-weight: 700; margin-bottom: 10px; }
     .badge-good { color: #2e7d32; }
     .badge-bad { color: #c62828; }
-
-    .review-card {
-      background: #f9f9f6;
-      border-radius: 11px;
-      padding: 12px 15px;
-      margin-bottom: 9px;
-      border-left: 3px solid #ddd;
-    }
+    .review-card { background: #f9f9f6; border-radius: 11px; padding: 12px 15px; margin-bottom: 9px; border-left: 3px solid #ddd; }
     .review-card.good { border-left-color: #81c784; }
     .review-card.bad { border-left-color: #e57373; }
-
     .review-meta { display: flex; justify-content: space-between; margin-bottom: 5px; }
     .reviewer { font-weight: 600; font-size: .83rem; }
     .review-date { font-size: .74rem; color: #aaa; }
     .review-stars { font-size: .78rem; margin-bottom: 5px; }
     .review-text { font-size: .83rem; color: #444; line-height: 1.65; }
     .review-source { font-size: .7rem; color: #bbb; margin-top: 5px; }
-
-    /* 价目表 */
     .price-table { width: 100%; border-collapse: collapse; font-size: .86rem; }
     .price-table th { text-align: left; padding: 9px 12px; background: #f0f0ec; color: #666; font-size: .78rem; font-weight: 600; }
     .price-table td { padding: 10px 12px; border-bottom: 1px solid #f0f0ec; }
@@ -370,24 +215,23 @@
     .price-table tr:hover td { background: #fafaf7; }
     .price { font-weight: 700; color: #1a1a2e; }
     .price-note { font-size: .74rem; color: #999; }
-
-    /* 详细信息 */
     .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .info-item { display: flex; flex-direction: column; gap: 2px; }
     .info-label { font-size: .72rem; color: #aaa; font-weight: 600; text-transform: uppercase; letter-spacing: .4px; }
     .info-value { font-size: .85rem; color: #333; }
 
-    /* 响应式 */
+    /* 无结果 */
+    .no-result { text-align: center; padding: 40px 20px; color: #aaa; font-size: .88rem; line-height: 2; }
+
     @media (max-width: 900px) {
-      .search-bar { max-width: 200px; margin: 0 12px; }
-      body.map-view .list-panel { width: 300px; }
       body.card-view .shop-card { width: calc(50% - 8px); }
+      body.map-view .list-panel { width: 300px; }
     }
     @media (max-width: 640px) {
       header { flex-wrap: wrap; gap: 8px; padding: 10px 14px; }
       .search-bar { max-width: 100%; margin: 0; order: 3; flex: 0 0 100%; }
       body.map-view .main { flex-direction: column; }
-      body.map-view .list-panel { width: 100%; height: 200px; flex-direction: row; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; padding: 10px; }
+      body.map-view .list-panel { width: 100%; height: 220px; flex-direction: row; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; padding: 10px; }
       .map-panel { min-height: 320px; }
       .detail-body { padding: 16px 18px; }
       .info-grid { grid-template-columns: 1fr; }
@@ -397,11 +241,10 @@
 </head>
 <body class="map-view">
 
-<!-- 顶栏 -->
 <header>
-  <h1>✂️ 阿姆斯特丹<span>理发店</span></h1>
+  <h1>✂️ <span>荷兰</span>理发店</h1>
   <div class="search-bar">
-    <input type="text" id="searchInput" placeholder="搜索店名、区域、服务…" />
+    <input type="text" id="searchInput" placeholder="搜索店名、城市、服务…" />
     <button onclick="doSearch()">搜索</button>
   </div>
   <div class="view-toggle">
@@ -410,33 +253,45 @@
   </div>
 </header>
 
-<!-- 筛选栏 -->
 <div class="filter-bar">
-  <span>筛选：</span>
-  <div class="filter-chip active" onclick="filterChip(this,'all')">全部</div>
-  <div class="filter-chip" onclick="filterChip(this,'chinese')">🇨🇳 中文服务</div>
-  <div class="filter-chip" onclick="filterChip(this,'open')">🟢 现在营业</div>
-  <div class="filter-chip" onclick="filterChip(this,'high')">⭐ 评分 4.5+</div>
-  <div class="filter-chip" onclick="filterChip(this,'cheap')">💰 人均 &lt;€30</div>
-  <div class="filter-chip" onclick="filterChip(this,'barber')">🪒 男士剃发</div>
-  <div class="filter-chip" onclick="filterChip(this,'color')">🎨 染发</div>
-  <div class="filter-chip" onclick="filterChip(this,'centrum')">📍 市中心</div>
-  <div class="filter-chip" onclick="filterChip(this,'depit')">📍 De Pijp</div>
+  <!-- 城市 -->
+  <div class="filter-group">
+    <span class="filter-group-label">城市</span>
+    <div class="filter-chip" onclick="toggleFilter(this,'city','amsterdam')">阿姆斯特丹</div>
+    <div class="filter-chip" onclick="toggleFilter(this,'city','rotterdam')">鹿特丹</div>
+    <div class="filter-chip" onclick="toggleFilter(this,'city','hague')">海牙</div>
+    <div class="filter-chip" onclick="toggleFilter(this,'city','utrecht')">乌特勒支</div>
+    <div class="filter-chip" onclick="toggleFilter(this,'city','eindhoven')">埃因霍温</div>
+    <div class="filter-chip" onclick="toggleFilter(this,'city','groningen')">格罗宁根</div>
+  </div>
+  <div class="filter-divider"></div>
+  <!-- 服务 -->
+  <div class="filter-group">
+    <span class="filter-group-label">服务</span>
+    <div class="filter-chip" onclick="toggleFilter(this,'service','chinese')">🇨🇳 中文</div>
+    <div class="filter-chip" onclick="toggleFilter(this,'service','barber')">🪒 男士剃发</div>
+    <div class="filter-chip" onclick="toggleFilter(this,'service','color')">🎨 染发</div>
+    <div class="filter-chip" onclick="toggleFilter(this,'service','women')">💇 女士</div>
+  </div>
+  <div class="filter-divider"></div>
+  <!-- 其他 -->
+  <div class="filter-group">
+    <span class="filter-group-label">筛选</span>
+    <div class="filter-chip" onclick="toggleFilter(this,'other','open')">🟢 营业中</div>
+    <div class="filter-chip" onclick="toggleFilter(this,'other','high')">⭐ 4.5+</div>
+    <div class="filter-chip" onclick="toggleFilter(this,'other','cheap')">💰 &lt;€30</div>
+  </div>
+  <div class="filter-divider"></div>
+  <button class="filter-clear" id="filterClear" onclick="clearAllFilters()">✕ 清除筛选</button>
 </div>
 
-<!-- 主体 -->
 <div class="main">
-
-  <!-- 列表面板 -->
   <div class="list-panel" id="listPanel">
     <div class="result-count" id="resultCount">加载中…</div>
   </div>
-
-  <!-- 地图面板 -->
   <div class="map-panel" id="mapPanel">
     <div id="leafletMap"></div>
   </div>
-
 </div>
 
 <!-- 详情弹窗 -->
@@ -459,7 +314,6 @@
         <button class="tab-btn" onclick="switchTab('prices')">💰 价目表</button>
         <button class="tab-btn" onclick="switchTab('info')">ℹ️ 详细信息</button>
       </div>
-
       <div class="tab-content active" id="tab-reviews">
         <div class="review-section">
           <h3>👍 <span class="badge-good">最近好评（3条）</span></h3>
@@ -470,14 +324,12 @@
           <div id="bad-reviews"></div>
         </div>
       </div>
-
       <div class="tab-content" id="tab-prices">
         <table class="price-table">
           <thead><tr><th>服务项目</th><th>价格</th><th>备注</th></tr></thead>
           <tbody id="price-tbody"></tbody>
         </table>
       </div>
-
       <div class="tab-content" id="tab-info">
         <div class="info-grid" id="info-grid"></div>
       </div>
@@ -487,195 +339,392 @@
 
 <script>
 // ============================================================
-// 店铺数据（Demo，接入 Yelp API 后替换）
+// 店铺数据
 // ============================================================
 const SHOPS = [
+  // ===== 阿姆斯特丹 =====
   {
-    id: 1,
-    name: "Schorem Haarsnijder en Barbier",
-    district: "Centrum", rating: 4.8, reviewCount: 1243, isOpen: true,
-    hasChinese: false, tags: ["男士剃发","复古风格","预约制"], avgPrice: 35,
-    address: "Nieuwebrugsteeg 11, Centrum", phone: "+31 20 123 4567",
-    hours: "周二–周六 10:00–19:00",
-    lat: 52.3747, lng: 4.8984,
-    goodReviews: [
-      { author: "李明", date: "2025-05-12", stars: 5, text: "师傅非常专业，推子用得非常细腻！复古油头做得一模一样，整个过程很享受，店内氛围超赞。会再来的！", source: "Google" },
-      { author: "Thomas V.", date: "2025-05-08", stars: 5, text: "Absolutely the best barber in Amsterdam. The attention to detail is unreal. Walked out feeling like a million euros.", source: "Yelp" },
-      { author: "王芳", date: "2025-04-30", stars: 5, text: "老公说是他这辈子剪过最好的发型！店里的复古唱片机很有感觉，下次还带朋友来。", source: "Google" }
+    id:1, city:'amsterdam', cityLabel:'阿姆斯特丹',
+    name:"Schorem Haarsnijder en Barbier", district:"Centrum",
+    rating:4.8, reviewCount:1243, isOpen:true,
+    hasChinese:false, tags:["男士剃发","复古风格","预约制"], avgPrice:35,
+    address:"Nieuwebrugsteeg 11, Centrum, Amsterdam", phone:"+31 20 123 4567",
+    hours:"周二–周六 10:00–19:00", lat:52.3747, lng:4.8984,
+    goodReviews:[
+      {author:"李明",date:"2025-05-12",stars:5,text:"师傅非常专业，推子用得非常细腻！复古油头做得一模一样，整个过程很享受，店内氛围超赞。",source:"Google"},
+      {author:"Thomas V.",date:"2025-05-08",stars:5,text:"Absolutely the best barber in Amsterdam. The attention to detail is unreal.",source:"Yelp"},
+      {author:"王芳",date:"2025-04-30",stars:5,text:"老公说是他这辈子剪过最好的发型！店里的复古唱片机很有感觉，下次还带朋友来。",source:"Google"}
     ],
-    badReviews: [
-      { author: "Marco D.", date: "2025-03-15", stars: 2, text: "Waited 45 minutes past my appointment. The haircut itself was fine but the time management is terrible.", source: "Yelp" },
-      { author: "张伟", date: "2025-02-20", stars: 2, text: "不会讲中文，沟通有点费劲，最后发型和我要的有点差距。价格偏贵。", source: "Google" },
-      { author: "Sander K.", date: "2025-01-10", stars: 1, text: "Very rude staff when I asked to change a small detail. Won't be coming back.", source: "Google" }
+    badReviews:[
+      {author:"Marco D.",date:"2025-03-15",stars:2,text:"Waited 45 minutes past my appointment. Time management is terrible.",source:"Yelp"},
+      {author:"张伟",date:"2025-02-20",stars:2,text:"不会讲中文，沟通有点费劲，最后发型和我要的有点差距。价格偏贵。",source:"Google"},
+      {author:"Sander K.",date:"2025-01-10",stars:1,text:"Very rude staff when I asked to change a small detail.",source:"Google"}
     ],
-    prices: [
-      { service: "男士剪发", price: "€35", note: "含洗发、造型" },
-      { service: "剃须（直刀）", price: "€25", note: "含热毛巾" },
-      { service: "剪发 + 剃须", price: "€55", note: "套餐优惠" },
-      { service: "胡须修整", price: "€15", note: "约20分钟" },
+    prices:[
+      {service:"男士剪发",price:"€35",note:"含洗发、造型"},
+      {service:"剃须（直刀）",price:"€25",note:"含热毛巾"},
+      {service:"剪发 + 剃须",price:"€55",note:"套餐优惠"},
+      {service:"胡须修整",price:"€15",note:"约20分钟"},
     ],
-    info: { 预约方式:"线上/电话", 语言:"英语、荷兰语", 支付方式:"现金/银行卡", 营业时间:"周二–周六 10:00–19:00", 停车:"附近收费停车场", WiFi:"免费" }
+    info:{预约方式:"线上/电话",语言:"英语、荷兰语",支付方式:"现金/银行卡",营业时间:"周二–六 10:00–19:00",停车:"附近收费停车场",WiFi:"免费"}
   },
   {
-    id: 2,
-    name: "中华发艺 Chinese Haircut",
-    district: "De Pijp", rating: 4.6, reviewCount: 387, isOpen: true,
-    hasChinese: true, tags: ["中文服务","女士剪发","男士剪发","烫发"], avgPrice: 22,
-    address: "Ferdinand Bolstraat 89, De Pijp", phone: "+31 20 987 6543",
-    hours: "周一–周日 09:00–20:00",
-    lat: 52.3554, lng: 4.8980,
-    goodReviews: [
-      { author: "小红", date: "2025-05-15", stars: 5, text: "终于找到会剪亚洲发质的理发师！老板娘会说普通话，完全不用担心沟通问题，价格也实惠，剪完超级满意！", source: "Google" },
-      { author: "陈浩", date: "2025-05-03", stars: 5, text: "在阿姆斯特丹难得的中文理发店，价格合理，发型满意，以后固定来这里了。", source: "Google" },
-      { author: "Mei L.", date: "2025-04-28", stars: 5, text: "My Chinese friends recommended this place. Excellent cut, reasonable price and she speaks Mandarin!", source: "Yelp" }
+    id:2, city:'amsterdam', cityLabel:'阿姆斯特丹',
+    name:"中华发艺 Chinese Haircut", district:"De Pijp",
+    rating:4.6, reviewCount:387, isOpen:true,
+    hasChinese:true, tags:["中文服务","女士剪发","男士剪发","烫发"], avgPrice:22,
+    address:"Ferdinand Bolstraat 89, De Pijp, Amsterdam", phone:"+31 20 987 6543",
+    hours:"周一–周日 09:00–20:00", lat:52.3554, lng:4.8980,
+    goodReviews:[
+      {author:"小红",date:"2025-05-15",stars:5,text:"终于找到会剪亚洲发质的理发师！老板娘会说普通话，完全不用担心沟通问题，价格也实惠！",source:"Google"},
+      {author:"陈浩",date:"2025-05-03",stars:5,text:"在阿姆斯特丹难得的中文理发店，价格合理，发型满意，以后固定来这里了。",source:"Google"},
+      {author:"Mei L.",date:"2025-04-28",stars:5,text:"My Chinese friends recommended this. Excellent cut, reasonable price and she speaks Mandarin!",source:"Yelp"}
     ],
-    badReviews: [
-      { author: "刘洋", date: "2025-04-10", stars: 2, text: "等了很久，没有预约系统，只能现场排队，高峰期要等1小时以上。", source: "Google" },
-      { author: "Jenny W.", date: "2025-03-22", stars: 3, text: "The place is quite small and can get crowded. The haircut was okay but not amazing for the price.", source: "Yelp" },
-      { author: "赵磊", date: "2025-02-15", stars: 2, text: "染发效果没达到预期，颜色偏差比较大，沟通过程中感觉理发师有点急。", source: "Google" }
+    badReviews:[
+      {author:"刘洋",date:"2025-04-10",stars:2,text:"等了很久，没有预约系统，只能现场排队，高峰期要等1小时以上。",source:"Google"},
+      {author:"Jenny W.",date:"2025-03-22",stars:3,text:"The place is quite small and can get crowded.",source:"Yelp"},
+      {author:"赵磊",date:"2025-02-15",stars:2,text:"染发效果没达到预期，颜色偏差比较大。",source:"Google"}
     ],
-    prices: [
-      { service: "女士剪发", price: "€25", note: "含洗发吹干" },
-      { service: "男士剪发", price: "€18", note: "含洗发" },
-      { service: "儿童剪发", price: "€15", note: "12岁以下" },
-      { service: "染发（单色）", price: "€55起", note: "视发长而定" },
-      { service: "烫发", price: "€80起", note: "视发长而定" },
+    prices:[
+      {service:"女士剪发",price:"€25",note:"含洗发吹干"},
+      {service:"男士剪发",price:"€18",note:"含洗发"},
+      {service:"儿童剪发",price:"€15",note:"12岁以下"},
+      {service:"染发（单色）",price:"€55起",note:"视发长而定"},
+      {service:"烫发",price:"€80起",note:"视发长而定"},
     ],
-    info: { 预约方式:"微信/电话，接受walk-in", 语言:"普通话、英语、荷兰语", 支付方式:"现金/银行卡/微信", 营业时间:"每天 09:00–20:00", 停车:"路边收费停车", WiFi:"免费" }
+    info:{预约方式:"微信/电话，接受walk-in",语言:"普通话、英语、荷兰语",支付方式:"现金/银行卡/微信",营业时间:"每天 09:00–20:00",停车:"路边收费停车",WiFi:"免费"}
   },
   {
-    id: 3,
-    name: "Barbers of Amsterdam",
-    district: "Centrum", rating: 4.7, reviewCount: 892, isOpen: true,
-    hasChinese: false, tags: ["男士剃发","胡须造型","预约制","高端"], avgPrice: 45,
-    address: "Leidseplein 18, Centrum", phone: "+31 20 321 0987",
-    hours: "周一–周六 09:00–20:00，周日 10:00–18:00",
-    lat: 52.3636, lng: 4.8839,
-    goodReviews: [
-      { author: "James R.", date: "2025-05-16", stars: 5, text: "Best barbershop experience in Amsterdam, hands down. The hot towel shave was absolutely divine. Worth every cent.", source: "Yelp" },
-      { author: "林峰", date: "2025-05-09", stars: 5, text: "朋友推荐来的，英语沟通没问题，发型师经验很丰富，推子技术一流，胡须修整也很仔细。", source: "Google" },
-      { author: "David K.", date: "2025-05-01", stars: 5, text: "Came for a beard trim and ended up getting a full haircut too. Both were excellent.", source: "Google" }
+    id:3, city:'amsterdam', cityLabel:'阿姆斯特丹',
+    name:"Barbers of Amsterdam", district:"Centrum",
+    rating:4.7, reviewCount:892, isOpen:true,
+    hasChinese:false, tags:["男士剃发","胡须造型","预约制","高端"], avgPrice:45,
+    address:"Leidseplein 18, Centrum, Amsterdam", phone:"+31 20 321 0987",
+    hours:"周一–周六 09:00–20:00，周日 10:00–18:00", lat:52.3636, lng:4.8839,
+    goodReviews:[
+      {author:"James R.",date:"2025-05-16",stars:5,text:"Best barbershop in Amsterdam. The hot towel shave was absolutely divine.",source:"Yelp"},
+      {author:"林峰",date:"2025-05-09",stars:5,text:"朋友推荐来的，英语沟通没问题，发型师经验很丰富，推子技术一流。",source:"Google"},
+      {author:"David K.",date:"2025-05-01",stars:5,text:"Came for a beard trim and ended up getting a full haircut too. Both excellent.",source:"Google"}
     ],
-    badReviews: [
-      { author: "Lucas B.", date: "2025-04-05", stars: 2, text: "Pricey for what you get. The haircut was average at best. Expected more given the reviews.", source: "Yelp" },
-      { author: "Oliver N.", date: "2025-03-12", stars: 2, text: "The booking system is broken half the time. Showed up for my appointment and they had no record of it.", source: "Google" },
-      { author: "Emma S.", date: "2025-02-28", stars: 3, text: "Good for men's cuts but they turned away my partner for a women's cut. Strictly a men's barbershop.", source: "Yelp" }
+    badReviews:[
+      {author:"Lucas B.",date:"2025-04-05",stars:2,text:"Pricey for what you get. The haircut was average at best.",source:"Yelp"},
+      {author:"Oliver N.",date:"2025-03-12",stars:2,text:"The booking system is broken half the time.",source:"Google"},
+      {author:"Emma S.",date:"2025-02-28",stars:3,text:"Good for men but they turned away my partner. Strictly a men's barbershop.",source:"Yelp"}
     ],
-    prices: [
-      { service: "男士剪发", price: "€40", note: "含洗发造型" },
-      { service: "热毛巾直刀剃须", price: "€35", note: "约30分钟" },
-      { service: "剪发 + 剃须", price: "€65", note: "约60分钟" },
-      { service: "胡须造型修整", price: "€20", note: "约15分钟" },
+    prices:[
+      {service:"男士剪发",price:"€40",note:"含洗发造型"},
+      {service:"热毛巾直刀剃须",price:"€35",note:"约30分钟"},
+      {service:"剪发 + 剃须",price:"€65",note:"约60分钟"},
+      {service:"胡须造型修整",price:"€20",note:"约15分钟"},
     ],
-    info: { 预约方式:"App/官网预约", 语言:"英语、荷兰语", 支付方式:"所有主流支付", 营业时间:"周一–日 09:00–20:00", 停车:"附近收费停车场", WiFi:"提供" }
+    info:{预约方式:"App/官网预约",语言:"英语、荷兰语",支付方式:"所有主流支付",营业时间:"周一–日",停车:"附近收费停车场",WiFi:"提供"}
+  },
+  // ===== 鹿特丹 =====
+  {
+    id:4, city:'rotterdam', cityLabel:'鹿特丹',
+    name:"Schorem Barbier Rotterdam", district:"Centrum",
+    rating:4.7, reviewCount:634, isOpen:true,
+    hasChinese:false, tags:["男士剃发","复古风格","预约制"], avgPrice:38,
+    address:"Nieuwe Binnenweg 116, Rotterdam", phone:"+31 10 234 5678",
+    hours:"周二–周六 10:00–19:00", lat:51.9225, lng:4.4792,
+    goodReviews:[
+      {author:"Jan B.",date:"2025-05-14",stars:5,text:"Geweldige barbier! The classic pompadour they gave me is perfect. Real craftsmen.",source:"Google"},
+      {author:"陈磊",date:"2025-05-05",stars:5,text:"鹿特丹找到的最好的理发店，环境很棒，师傅技术过硬。",source:"Google"},
+      {author:"Mike S.",date:"2025-04-20",stars:5,text:"Hot towel shave was incredible. Best €35 I've spent in Rotterdam.",source:"Yelp"}
+    ],
+    badReviews:[
+      {author:"Pieter V.",date:"2025-03-10",stars:2,text:"Had to wait an hour even with an appointment. Frustrating.",source:"Yelp"},
+      {author:"刘强",date:"2025-02-18",stars:2,text:"和图片上差距有点大，实际效果比较普通。",source:"Google"},
+      {author:"Alex T.",date:"2025-01-25",stars:2,text:"Overpriced for what you get in Rotterdam. Expected better.",source:"Google"}
+    ],
+    prices:[
+      {service:"男士剪发",price:"€38",note:"含洗发、造型"},
+      {service:"剃须（直刀）",price:"€28",note:"含热毛巾"},
+      {service:"剪发 + 剃须",price:"€58",note:"套餐优惠"},
+      {service:"胡须修整",price:"€15",note:"约20分钟"},
+    ],
+    info:{预约方式:"线上预约",语言:"荷兰语、英语",支付方式:"现金/银行卡",营业时间:"周二–六 10:00–19:00",停车:"附近停车场",WiFi:"免费"}
   },
   {
-    id: 4,
-    name: "Hair Gallery Jordaan",
-    district: "Jordaan", rating: 4.5, reviewCount: 564, isOpen: true,
-    hasChinese: false, tags: ["女士剪发","染发","护发","高端"], avgPrice: 65,
-    address: "Elandsgracht 54, Jordaan", phone: "+31 20 654 3210",
-    hours: "周二–周六 10:00–19:00",
-    lat: 52.3693, lng: 4.8826,
-    goodReviews: [
-      { author: "Lena M.", date: "2025-05-14", stars: 5, text: "The balayage they did for me is absolutely stunning. I've been getting compliments all week. Highly recommend Sarah!", source: "Google" },
-      { author: "赵静", date: "2025-05-07", stars: 5, text: "做了一个欧式剪发，师傅技术很好，颜色也做得很自然，虽然贵一点但绝对值得！", source: "Yelp" },
-      { author: "Charlotte P.", date: "2025-04-22", stars: 5, text: "Love this place! Great atmosphere, talented stylists and they use premium products.", source: "Google" }
+    id:5, city:'rotterdam', cityLabel:'鹿特丹',
+    name:"Hair Studio Rotterdam Oost", district:"Oost",
+    rating:4.4, reviewCount:289, isOpen:true,
+    hasChinese:true, tags:["中文服务","女士剪发","染发","烫发"], avgPrice:30,
+    address:"Beijerlandselaan 55, Rotterdam Oost", phone:"+31 10 345 6789",
+    hours:"周一–周六 09:30–19:30", lat:51.9185, lng:4.5050,
+    goodReviews:[
+      {author:"王小美",date:"2025-05-12",stars:5,text:"鹿特丹少见的中文理发店！老板来自广东，普通话也说得很好，价格实惠发型棒！",source:"Google"},
+      {author:"张欣",date:"2025-04-28",stars:5,text:"染了挑染，颜色很好看，师傅很专业，会再来的。",source:"Google"},
+      {author:"Li Wei",date:"2025-04-15",stars:4,text:"Great service in Mandarin! The balayage looks natural and the price was fair.",source:"Yelp"}
     ],
-    badReviews: [
-      { author: "Rachel G.", date: "2025-03-18", stars: 2, text: "Waited 20 minutes past appointment time without any apology. The customer service was lacking.", source: "Yelp" },
-      { author: "Nina K.", date: "2025-02-10", stars: 2, text: "Very expensive and the color correction took 3 visits to get right. Exhausting experience.", source: "Google" },
-      { author: "Isabelle F.", date: "2025-01-15", stars: 2, text: "The stylist was on her phone multiple times during my appointment. Unprofessional.", source: "Yelp" }
+    badReviews:[
+      {author:"Sophie M.",date:"2025-03-20",stars:2,text:"My appointment was forgotten and I had to wait 40 minutes.",source:"Google"},
+      {author:"刘明",date:"2025-02-10",stars:2,text:"烫发效果坚持不了几天就散了，有点失望。",source:"Google"},
+      {author:"Nina K.",date:"2025-01-18",stars:2,text:"The color was slightly off from what I asked for.",source:"Yelp"}
     ],
-    prices: [
-      { service: "女士剪发（短发）", price: "€55", note: "含洗发吹干" },
-      { service: "女士剪发（长发）", price: "€75", note: "含洗发吹干" },
-      { service: "Balayage 渐染", price: "€150起", note: "视发量" },
-      { service: "全头漂染", price: "€180起", note: "含护理" },
-      { service: "男士剪发", price: "€45", note: "含造型" },
+    prices:[
+      {service:"女士剪发",price:"€28",note:"含洗发吹干"},
+      {service:"男士剪发",price:"€20",note:"含洗发"},
+      {service:"染发（单色）",price:"€50起",note:"视发长"},
+      {service:"挑染/渐染",price:"€80起",note:"视发量"},
+      {service:"烫发",price:"€75起",note:"视发长"},
     ],
-    info: { 预约方式:"线上预约（必须）", 语言:"荷兰语、英语、法语", 支付方式:"银行卡/现金", 营业时间:"周二–六 10:00–19:00", 停车:"Jordaan停车紧张，建议骑车", WiFi:"免费" }
+    info:{预约方式:"电话/微信预约",语言:"普通话、粤语、英语",支付方式:"现金/银行卡",营业时间:"周一–六 09:30–19:30",停车:"路边停车",WiFi:"免费"}
+  },
+  // ===== 海牙 =====
+  {
+    id:6, city:'hague', cityLabel:'海牙',
+    name:"The Hague Barber Co.", district:"Centrum",
+    rating:4.5, reviewCount:412, isOpen:true,
+    hasChinese:false, tags:["男士剃发","胡须造型","高端"], avgPrice:42,
+    address:"Grote Marktstraat 30, Den Haag", phone:"+31 70 123 4567",
+    hours:"周一–周六 09:00–19:00", lat:52.0764, lng:4.3144,
+    goodReviews:[
+      {author:"Robert J.",date:"2025-05-13",stars:5,text:"Best barbershop in The Hague! Classic cuts, great atmosphere and superb shaves.",source:"Google"},
+      {author:"周凯",date:"2025-05-02",stars:5,text:"海牙最好的理发店之一，预约很方便，师傅技术很专业。",source:"Google"},
+      {author:"Erik S.",date:"2025-04-22",stars:5,text:"The hot towel shave is a must-try. Walked out feeling like a new man.",source:"Yelp"}
+    ],
+    badReviews:[
+      {author:"Mark V.",date:"2025-03-18",stars:2,text:"Prices have gone up significantly but quality hasn't followed.",source:"Yelp"},
+      {author:"林海",date:"2025-02-22",stars:2,text:"价格偏贵，效果只是普通水平，期望值没有被满足。",source:"Google"},
+      {author:"Anna P.",date:"2025-01-14",stars:2,text:"Long wait even with an appointment. Not very organised.",source:"Google"}
+    ],
+    prices:[
+      {service:"男士剪发",price:"€40",note:"含洗发造型"},
+      {service:"热毛巾剃须",price:"€35",note:"约30分钟"},
+      {service:"剪发 + 剃须",price:"€65",note:"套餐"},
+      {service:"胡须修整",price:"€18",note:""},
+    ],
+    info:{预约方式:"线上/电话预约",语言:"荷兰语、英语",支付方式:"所有主流支付",营业时间:"周一–六 09:00–19:00",停车:"附近停车场",WiFi:"免费"}
   },
   {
-    id: 5,
-    name: "Kapper Amsterdam Noord",
-    district: "Noord", rating: 4.3, reviewCount: 218, isOpen: false,
-    hasChinese: false, tags: ["女士剪发","男士剪发","婚礼造型"], avgPrice: 40,
-    address: "Buikslotermeerplein 12, Noord", phone: "+31 20 456 7890",
-    hours: "周二–五 10:00–18:00，周六 09:00–17:00",
-    lat: 52.4009, lng: 4.9230,
-    goodReviews: [
-      { author: "Anna B.", date: "2025-05-10", stars: 5, text: "Lovely atmosphere and my haircut turned out beautifully. The stylist really listened to what I wanted!", source: "Google" },
-      { author: "Pieter J.", date: "2025-04-25", stars: 4, text: "Good barber, fair price. Easy to book online and no long waiting times.", source: "Yelp" },
-      { author: "Sofia M.", date: "2025-04-18", stars: 5, text: "Did my bridal updo here and it was perfect. Very professional team!", source: "Google" }
+    id:7, city:'hague', cityLabel:'海牙',
+    name:"Asian Hair Studio Den Haag", district:"Chinatown",
+    rating:4.3, reviewCount:198, isOpen:false,
+    hasChinese:true, tags:["中文服务","女士剪发","男士剪发","烫发","染发"], avgPrice:25,
+    address:"Wagenstraat 175, Den Haag", phone:"+31 70 234 5678",
+    hours:"周二–周日 10:00–19:00", lat:52.0731, lng:4.3100,
+    goodReviews:[
+      {author:"李丽",date:"2025-05-10",stars:5,text:"海牙华人区的中文理发店，老板很亲切，剪发技术很好，价格也实惠。",source:"Google"},
+      {author:"张杰",date:"2025-04-25",stars:4,text:"亚洲发质剪得很自然，不像有些欧洲理发师把头发剪得很厚重。",source:"Google"},
+      {author:"Yuki T.",date:"2025-04-10",stars:5,text:"Finally a stylist who understands Asian hair! Great cut and very friendly.",source:"Yelp"}
     ],
-    badReviews: [
-      { author: "Kevin T.", date: "2025-03-30", stars: 2, text: "The coloring job was uneven. Had to go back to get it fixed and they charged me extra.", source: "Google" },
-      { author: "Hana S.", date: "2025-02-14", stars: 2, text: "Booked 3 weeks in advance and they called to cancel 2 hours before. Very disappointing.", source: "Yelp" },
-      { author: "Mark V.", date: "2025-01-20", stars: 1, text: "Terrible experience. The cut was completely different from what I showed them.", source: "Google" }
+    badReviews:[
+      {author:"陈晨",date:"2025-03-15",stars:2,text:"周末人很多，等了将近两小时，建议大家工作日去。",source:"Google"},
+      {author:"Maria S.",date:"2025-02-20",stars:2,text:"The place was quite messy when I visited.",source:"Yelp"},
+      {author:"赵雷",date:"2025-01-12",stars:2,text:"染发掉色很快，两周就褪了很多。",source:"Google"}
     ],
-    prices: [
-      { service: "女士剪发（短发）", price: "€40", note: "含吹干造型" },
-      { service: "女士剪发（长发）", price: "€55", note: "含吹干造型" },
-      { service: "男士剪发", price: "€30", note: "含洗发" },
-      { service: "婚礼造型", price: "€120起", note: "需提前预约" },
+    prices:[
+      {service:"女士剪发",price:"€22",note:"含洗发吹干"},
+      {service:"男士剪发",price:"€16",note:"含洗发"},
+      {service:"染发",price:"€45起",note:"视发长"},
+      {service:"烫发",price:"€70起",note:"视发长"},
+      {service:"儿童剪发",price:"€12",note:""},
     ],
-    info: { 预约方式:"线上预约（官网）", 语言:"荷兰语、英语", 支付方式:"银行卡/iDEAL", 营业时间:"周二–五 10:00–18:00", 停车:"免费路边停车", WiFi:"免费" }
+    info:{预约方式:"电话/walk-in",语言:"普通话、粤语、英语、荷兰语",支付方式:"现金/银行卡",营业时间:"周二–日 10:00–19:00",停车:"路边停车",WiFi:"无"}
+  },
+  // ===== 乌特勒支 =====
+  {
+    id:8, city:'utrecht', cityLabel:'乌特勒支',
+    name:"Utrecht Barbershop & Co.", district:"Binnenstad",
+    rating:4.6, reviewCount:327, isOpen:true,
+    hasChinese:false, tags:["男士剃发","胡须造型","预约制"], avgPrice:35,
+    address:"Oudegracht 110, Utrecht", phone:"+31 30 123 4567",
+    hours:"周一–周六 09:00–19:00", lat:52.0907, lng:5.1214,
+    goodReviews:[
+      {author:"Tom B.",date:"2025-05-15",stars:5,text:"Fantastic barbershop right on the Oudegracht. The fade they did was perfect.",source:"Google"},
+      {author:"王强",date:"2025-05-04",stars:5,text:"乌特勒支最棒的理发店！环境好，师傅技术扎实，发型持久。",source:"Google"},
+      {author:"Sven K.",date:"2025-04-18",stars:5,text:"Best haircut I've had in Utrecht. Clean, professional and reasonable prices.",source:"Yelp"}
+    ],
+    badReviews:[
+      {author:"Lars M.",date:"2025-03-22",stars:2,text:"Waited over 30 minutes for my appointment. The haircut was okay but nothing special.",source:"Yelp"},
+      {author:"陈亮",date:"2025-02-16",stars:2,text:"效果比较普通，性价比一般，周边有更好的选择。",source:"Google"},
+      {author:"Emma V.",date:"2025-01-20",stars:2,text:"They refused to do the style I showed them. Very inflexible.",source:"Google"}
+    ],
+    prices:[
+      {service:"男士剪发",price:"€35",note:"含洗发造型"},
+      {service:"剃须",price:"€25",note:"含热毛巾"},
+      {service:"剪发 + 剃须",price:"€52",note:"套餐"},
+      {service:"胡须修整",price:"€14",note:""},
+    ],
+    info:{预约方式:"线上/电话预约",语言:"荷兰语、英语",支付方式:"现金/银行卡/iDEAL",营业时间:"周一–六 09:00–19:00",停车:"附近停车场",WiFi:"免费"}
   },
   {
-    id: 6,
-    name: "UniSex Kapper Oost",
-    district: "Oost", rating: 4.2, reviewCount: 146, isOpen: true,
-    hasChinese: false, tags: ["男女通用","平价","男士剪发","女士剪发"], avgPrice: 18,
-    address: "Javastraat 44, Oost", phone: "+31 20 789 0123",
-    hours: "周一–周六 09:30–18:30",
-    lat: 52.3640, lng: 4.9380,
-    goodReviews: [
-      { author: "Ahmed K.", date: "2025-05-13", stars: 5, text: "Best price-quality ratio in Amsterdam East! Quick, clean and exactly what I asked for.", source: "Google" },
-      { author: "Maria S.", date: "2025-04-30", stars: 4, text: "No frills, just a good haircut at a fair price. Friendly barber, no long wait.", source: "Yelp" },
-      { author: "张明", date: "2025-04-15", stars: 4, text: "价格实惠，剪得也不错，适合日常维护。不花哨但很实用。", source: "Google" }
+    id:9, city:'utrecht', cityLabel:'乌特勒支',
+    name:"Hair Studio Utrecht Oost", district:"Oost",
+    rating:4.2, reviewCount:156, isOpen:true,
+    hasChinese:true, tags:["中文服务","女士剪发","男士剪发","染发"], avgPrice:24,
+    address:"Biltstraat 90, Utrecht Oost", phone:"+31 30 234 5678",
+    hours:"周一–周六 10:00–19:00", lat:52.0940, lng:5.1350,
+    goodReviews:[
+      {author:"刘芳",date:"2025-05-11",stars:5,text:"乌特勒支也有中文理发店！老板来自上海，普通话很流利，剪发效果很好。",source:"Google"},
+      {author:"陈晓",date:"2025-04-26",stars:4,text:"价格实惠，适合学生，离大学区很近，经常去。",source:"Google"},
+      {author:"Li Na",date:"2025-04-12",stars:4,text:"Great for Asian hair types! Affordable and friendly service.",source:"Yelp"}
     ],
-    badReviews: [
-      { author: "Laura B.", date: "2025-03-20", stars: 2, text: "The place needs a serious clean. Hair everywhere and the tools looked old.", source: "Google" },
-      { author: "Erik N.", date: "2025-02-22", stars: 2, text: "Rushed through my haircut in 10 minutes. You get what you pay for.", source: "Yelp" },
-      { author: "Yuki T.", date: "2025-01-30", stars: 2, text: "The stylist didn't understand what I wanted and gave me a completely different cut.", source: "Google" }
+    badReviews:[
+      {author:"Sophie L.",date:"2025-03-19",stars:2,text:"The place is small and cramped. The cut was fine but not worth the trouble.",source:"Yelp"},
+      {author:"张明",date:"2025-02-14",stars:2,text:"染发色差有点大，和色卡差了不少。",source:"Google"},
+      {author:"Kevin W.",date:"2025-01-22",stars:2,text:"Appointment system is chaotic. Showed up and waited an hour.",source:"Google"}
     ],
-    prices: [
-      { service: "男士剪发", price: "€15", note: "快剪" },
-      { service: "女士剪发", price: "€22", note: "含吹干" },
-      { service: "儿童剪发", price: "€12", note: "10岁以下" },
-      { service: "胡须修整", price: "€8", note: "" },
+    prices:[
+      {service:"女士剪发",price:"€22",note:"含洗发吹干"},
+      {service:"男士剪发",price:"€16",note:"含洗发"},
+      {service:"染发",price:"€48起",note:"视发长"},
+      {service:"儿童剪发",price:"€12",note:""},
     ],
-    info: { 预约方式:"接受walk-in，可电话预约", 语言:"荷兰语、英语、阿拉伯语", 支付方式:"现金/银行卡", 营业时间:"周一–六 09:30–18:30", 停车:"路边停车", WiFi:"无" }
-  }
+    info:{预约方式:"电话/微信预约",语言:"普通话、英语",支付方式:"现金/银行卡",营业时间:"周一–六 10:00–19:00",停车:"路边停车",WiFi:"免费"}
+  },
+  // ===== 埃因霍温 =====
+  {
+    id:10, city:'eindhoven', cityLabel:'埃因霍温',
+    name:"Eindhoven Barbers", district:"Centrum",
+    rating:4.4, reviewCount:243, isOpen:true,
+    hasChinese:false, tags:["男士剃发","现代风格","预约制"], avgPrice:32,
+    address:"Rechtestraat 44, Eindhoven", phone:"+31 40 123 4567",
+    hours:"周二–周六 09:30–18:30", lat:51.4416, lng:5.4697,
+    goodReviews:[
+      {author:"Bas V.",date:"2025-05-13",stars:5,text:"Modern barbershop with great skills. The skin fade they did is immaculate.",source:"Google"},
+      {author:"赵伟",date:"2025-05-01",stars:4,text:"埃因霍温不错的理发店，环境现代，师傅年轻有活力，技术不错。",source:"Google"},
+      {author:"Rick M.",date:"2025-04-20",stars:5,text:"Best barber in Eindhoven for modern cuts. Always leave satisfied.",source:"Yelp"}
+    ],
+    badReviews:[
+      {author:"Joost K.",date:"2025-03-15",stars:2,text:"Had to reschedule twice due to their cancellations. Very frustrating.",source:"Google"},
+      {author:"林晓",date:"2025-02-18",stars:2,text:"效果一般，价格还可以，但不是特别出彩。",source:"Google"},
+      {author:"Sam P.",date:"2025-01-10",stars:2,text:"The music is way too loud. Hard to communicate what you want.",source:"Yelp"}
+    ],
+    prices:[
+      {service:"男士剪发",price:"€32",note:"含洗发造型"},
+      {service:"剃须",price:"€22",note:""},
+      {service:"剪发 + 剃须",price:"€48",note:"套餐"},
+      {service:"胡须修整",price:"€12",note:""},
+    ],
+    info:{预约方式:"线上预约",语言:"荷兰语、英语",支付方式:"银行卡/现金",营业时间:"周二–六 09:30–18:30",停车:"附近停车场",WiFi:"免费"}
+  },
+  // ===== 格罗宁根 =====
+  {
+    id:11, city:'groningen', cityLabel:'格罗宁根',
+    name:"Groningen Kappers", district:"Centrum",
+    rating:4.3, reviewCount:189, isOpen:true,
+    hasChinese:false, tags:["男士剪发","女士剪发","平价"], avgPrice:22,
+    address:"Herestraat 60, Groningen", phone:"+31 50 123 4567",
+    hours:"周一–周六 09:00–18:00", lat:53.2194, lng:6.5665,
+    goodReviews:[
+      {author:"Lotte B.",date:"2025-05-12",stars:5,text:"Super friendly staff and excellent value for money. Perfect cut every time!",source:"Google"},
+      {author:"黄志",date:"2025-04-28",stars:4,text:"格罗宁根学生城，这家性价比很高，师傅很认真。",source:"Google"},
+      {author:"Finn S.",date:"2025-04-15",stars:4,text:"Solid barbershop for a student city. Fair prices and no nonsense service.",source:"Yelp"}
+    ],
+    badReviews:[
+      {author:"Daan V.",date:"2025-03-20",stars:2,text:"Very basic service. Fine for a quick cut but don't expect anything fancy.",source:"Google"},
+      {author:"陈晨",date:"2025-02-12",stars:2,text:"等待时间有点长，店内比较嘈杂。",source:"Google"},
+      {author:"Roos M.",date:"2025-01-15",stars:2,text:"The styling products they used left my hair feeling greasy all day.",source:"Yelp"}
+    ],
+    prices:[
+      {service:"男士剪发",price:"€20",note:"含洗发"},
+      {service:"女士剪发",price:"€28",note:"含吹干"},
+      {service:"儿童剪发",price:"€14",note:""},
+      {service:"染发",price:"€45起",note:"视发长"},
+    ],
+    info:{预约方式:"walk-in/电话",语言:"荷兰语、英语",支付方式:"现金/银行卡",营业时间:"周一–六 09:00–18:00",停车:"路边停车",WiFi:"无"}
+  },
 ];
 
 // ============================================================
-// 状态
+// 多选筛选状态
 // ============================================================
-let currentFilter = 'all';
+const activeFilters = { city: new Set(), service: new Set(), other: new Set() };
 let currentSearch = '';
 let currentShop = null;
 let leafletMap = null;
-let markers = {};
+const markers = {};
+
+// 城市中心坐标
+const CITY_CENTERS = {
+  amsterdam: [52.3676, 4.9041],
+  rotterdam:  [51.9225, 4.4792],
+  hague:      [52.0764, 4.3144],
+  utrecht:    [52.0907, 5.1214],
+  eindhoven:  [51.4416, 5.4697],
+  groningen:  [53.2194, 6.5665],
+};
+
+function toggleFilter(el, group, value) {
+  const set = activeFilters[group];
+  if (set.has(value)) { set.delete(value); el.classList.remove('active'); }
+  else { set.add(value); el.classList.add('active'); }
+  updateClearBtn();
+  renderCards(getFiltered());
+}
+
+function updateClearBtn() {
+  const hasAny = activeFilters.city.size > 0 || activeFilters.service.size > 0 || activeFilters.other.size > 0;
+  document.getElementById('filterClear').classList.toggle('visible', hasAny);
+}
+
+function clearAllFilters() {
+  activeFilters.city.clear(); activeFilters.service.clear(); activeFilters.other.clear();
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  updateClearBtn();
+  renderCards(getFiltered());
+}
 
 // ============================================================
-// 初始化地图
+// 筛选逻辑
+// ============================================================
+function getFiltered() {
+  let shops = [...SHOPS];
+
+  // 搜索
+  if (currentSearch) {
+    const q = currentSearch.toLowerCase();
+    shops = shops.filter(s =>
+      s.name.toLowerCase().includes(q) ||
+      s.cityLabel.includes(q) ||
+      s.district.toLowerCase().includes(q) ||
+      s.tags.some(t => t.toLowerCase().includes(q))
+    );
+  }
+
+  // 城市多选
+  if (activeFilters.city.size > 0)
+    shops = shops.filter(s => activeFilters.city.has(s.city));
+
+  // 服务多选
+  if (activeFilters.service.size > 0) {
+    shops = shops.filter(s => {
+      return Array.from(activeFilters.service).every(f => {
+        if (f === 'chinese') return s.hasChinese;
+        if (f === 'barber')  return s.tags.includes('男士剃发');
+        if (f === 'color')   return s.tags.some(t => t.includes('染发'));
+        if (f === 'women')   return s.tags.some(t => t.includes('女士'));
+        return true;
+      });
+    });
+  }
+
+  // 其他多选
+  if (activeFilters.other.size > 0) {
+    shops = shops.filter(s => {
+      return Array.from(activeFilters.other).every(f => {
+        if (f === 'open')  return s.isOpen;
+        if (f === 'high')  return s.rating >= 4.5;
+        if (f === 'cheap') return s.avgPrice < 30;
+        return true;
+      });
+    });
+  }
+
+  return shops;
+}
+
+// ============================================================
+// 地图初始化
 // ============================================================
 function initMap() {
-  leafletMap = L.map('leafletMap', {
-    center: [52.3676, 4.9041],
-    zoom: 13,
-    zoomControl: true
-  });
-
-  // OpenStreetMap 图层
+  leafletMap = L.map('leafletMap', { center: [52.1551, 5.3870], zoom: 8 });
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     maxZoom: 19
   }).addTo(leafletMap);
-
-  // 添加所有标记
   SHOPS.forEach(shop => addMarker(shop));
 }
 
@@ -683,60 +732,62 @@ function addMarker(shop) {
   const icon = L.divIcon({
     className: '',
     html: `<div class="map-marker" id="marker-${shop.id}"><span>✂️</span></div>`,
-    iconSize: [32, 32],
-    iconAnchor: [16, 32],
-    popupAnchor: [0, -36]
+    iconSize: [32, 32], iconAnchor: [16, 32], popupAnchor: [0, -36]
   });
-
   const marker = L.marker([shop.lat, shop.lng], { icon }).addTo(leafletMap);
-
-  const popup = L.popup({ closeButton: false, maxWidth: 240 }).setContent(`
+  marker.bindPopup(L.popup({ closeButton: false, maxWidth: 240 }).setContent(`
     <div class="popup-inner">
       <div class="popup-name">${shop.name}</div>
       <div class="popup-rating">⭐ ${shop.rating} · ${shop.reviewCount} 条评价 · ${shop.isOpen ? '🟢 营业中' : '🔴 已打烊'}</div>
-      <div class="popup-addr">📍 ${shop.district}</div>
+      <div class="popup-addr">📍 ${shop.cityLabel} · ${shop.district}</div>
       <button class="popup-btn" onclick="openDetail(SHOPS.find(s=>s.id===${shop.id}))">查看评价 & 价目表</button>
     </div>
-  `);
-
-  marker.bindPopup(popup);
-  marker.on('click', () => {
-    highlightCard(shop.id);
-  });
-
+  `));
+  marker.on('click', () => highlightCard(shop.id));
   markers[shop.id] = marker;
 }
 
 function highlightCard(id) {
-  document.querySelectorAll('.shop-card').forEach(c => {
-    c.classList.toggle('active', parseInt(c.dataset.id) === id);
-  });
-  // 滚动到卡片
+  document.querySelectorAll('.shop-card').forEach(c =>
+    c.classList.toggle('active', parseInt(c.dataset.id) === id)
+  );
   const card = document.querySelector(`.shop-card[data-id="${id}"]`);
   if (card) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 // ============================================================
-// 渲染卡片列表
+// 渲染卡片
 // ============================================================
 function renderCards(shops) {
   const panel = document.getElementById('listPanel');
-  panel.querySelectorAll('.shop-card').forEach(c => c.remove());
+  panel.querySelectorAll('.shop-card, .no-result').forEach(c => c.remove());
   document.getElementById('resultCount').textContent = `找到 ${shops.length} 家理发店`;
 
-  // 更新地图标记可见性
-  if (leafletMap) {
-    SHOPS.forEach(s => {
-      const m = markers[s.id];
-      if (!m) return;
-      const visible = shops.find(x => x.id === s.id);
-      const el = document.getElementById(`marker-${s.id}`);
-      if (el) el.style.opacity = visible ? '1' : '0.25';
-    });
+  // 更新地图标记透明度
+  SHOPS.forEach(s => {
+    const el = document.getElementById(`marker-${s.id}`);
+    if (el) el.style.opacity = shops.find(x => x.id === s.id) ? '1' : '0.2';
+  });
+
+  // 自动飞到合适视野
+  if (leafletMap && shops.length > 0) {
+    if (activeFilters.city.size === 1) {
+      const cityKey = Array.from(activeFilters.city)[0];
+      leafletMap.flyTo(CITY_CENTERS[cityKey], 13, { duration: 1 });
+    } else if (shops.length !== SHOPS.length) {
+      const bounds = L.latLngBounds(shops.map(s => [s.lat, s.lng]));
+      leafletMap.flyToBounds(bounds.pad(0.2), { duration: 1 });
+    } else {
+      leafletMap.flyTo([52.1551, 5.3870], 8, { duration: 1 });
+    }
   }
 
   if (shops.length === 0) {
-    panel.insertAdjacentHTML('beforeend', '<p style="color:#999;font-size:.85rem;padding:10px 0;">没有找到匹配的店铺 🙁</p>');
+    panel.insertAdjacentHTML('beforeend', `
+      <div class="no-result">
+        🔍 没有找到匹配的店铺<br/>
+        <small>试试调整筛选条件</small>
+      </div>`);
     return;
   }
 
@@ -746,7 +797,7 @@ function renderCards(shops) {
     card.dataset.id = shop.id;
     card.onclick = () => {
       if (leafletMap) {
-        leafletMap.setView([shop.lat, shop.lng], 15, { animate: true });
+        leafletMap.flyTo([shop.lat, shop.lng], 15, { duration: 0.8 });
         markers[shop.id]?.openPopup();
       }
       highlightCard(shop.id);
@@ -760,13 +811,14 @@ function renderCards(shops) {
       <div class="shop-rating">
         <span class="stars">${'★'.repeat(Math.floor(shop.rating))}${'☆'.repeat(5-Math.floor(shop.rating))}</span>
         <span class="rating-num">${shop.rating}</span>
-        <span class="review-count">(${shop.reviewCount} 条评价)</span>
+        <span class="review-count">(${shop.reviewCount} 条)</span>
       </div>
       <div class="shop-info">
-        <span>📍 ${shop.district}</span>
         <span>💰 均 €${shop.avgPrice}</span>
+        <span>🕐 ${shop.isOpen ? '营业中' : '已打烊'}</span>
       </div>
       <div class="shop-tags">
+        <span class="shop-tag-city">📍 ${shop.cityLabel}</span>
         ${shop.tags.map(t=>`<span class="shop-tag">${t}</span>`).join('')}
         ${shop.hasChinese ? '<span class="shop-tag shop-tag-cn">🇨🇳 中文</span>' : ''}
       </div>
@@ -776,43 +828,13 @@ function renderCards(shops) {
 }
 
 // ============================================================
-// 筛选 & 搜索
+// 搜索
 // ============================================================
-function getFiltered() {
-  let shops = [...SHOPS];
-  if (currentSearch) {
-    const q = currentSearch.toLowerCase();
-    shops = shops.filter(s =>
-      s.name.toLowerCase().includes(q) ||
-      s.district.toLowerCase().includes(q) ||
-      s.tags.some(t => t.toLowerCase().includes(q))
-    );
-  }
-  switch (currentFilter) {
-    case 'chinese': shops = shops.filter(s => s.hasChinese); break;
-    case 'open':    shops = shops.filter(s => s.isOpen); break;
-    case 'high':    shops = shops.filter(s => s.rating >= 4.5); break;
-    case 'cheap':   shops = shops.filter(s => s.avgPrice < 30); break;
-    case 'barber':  shops = shops.filter(s => s.tags.includes('男士剃发')); break;
-    case 'color':   shops = shops.filter(s => s.tags.some(t=>t.includes('染发'))); break;
-    case 'centrum': shops = shops.filter(s => s.district === 'Centrum'); break;
-    case 'depit':   shops = shops.filter(s => s.district === 'De Pijp'); break;
-  }
-  return shops;
-}
-
-function filterChip(el, type) {
-  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  currentFilter = type;
-  renderCards(getFiltered());
-}
-
 function doSearch() {
   currentSearch = document.getElementById('searchInput').value.trim();
   renderCards(getFiltered());
 }
-document.getElementById('searchInput').addEventListener('keydown', e => { if (e.key==='Enter') doSearch(); });
+document.getElementById('searchInput').addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
 
 // ============================================================
 // 视图切换
@@ -821,9 +843,7 @@ function switchView(view) {
   document.body.className = view + '-view';
   document.getElementById('btnMap').classList.toggle('active', view === 'map');
   document.getElementById('btnCard').classList.toggle('active', view === 'card');
-  if (view === 'map' && leafletMap) {
-    setTimeout(() => leafletMap.invalidateSize(), 50);
-  }
+  if (view === 'map' && leafletMap) setTimeout(() => leafletMap.invalidateSize(), 50);
 }
 
 // ============================================================
@@ -832,46 +852,39 @@ function switchView(view) {
 function openDetail(shop) {
   currentShop = shop;
   document.getElementById('dp-name').textContent = shop.name;
-  const statusEl = document.getElementById('dp-status');
-  statusEl.textContent = shop.isOpen ? '营业中' : '已打烊';
-  statusEl.className = 'dh-status ' + (shop.isOpen ? 'dh-open' : 'dh-closed');
-  document.getElementById('dp-rating').textContent = `⭐ ${shop.rating} (${shop.reviewCount} 条评价)`;
+  const st = document.getElementById('dp-status');
+  st.textContent = shop.isOpen ? '营业中' : '已打烊';
+  st.className = 'dh-status ' + (shop.isOpen ? 'dh-open' : 'dh-closed');
+  document.getElementById('dp-rating').textContent  = `⭐ ${shop.rating} (${shop.reviewCount} 条评价)`;
   document.getElementById('dp-address').textContent = `📍 ${shop.address}`;
-  document.getElementById('dp-phone').textContent = `📞 ${shop.phone}`;
-  document.getElementById('dp-hours').textContent = `🕐 ${shop.hours}`;
+  document.getElementById('dp-phone').textContent   = `📞 ${shop.phone}`;
+  document.getElementById('dp-hours').textContent   = `🕐 ${shop.hours}`;
 
   document.getElementById('good-reviews').innerHTML = shop.goodReviews.map(r => reviewCard(r,'good')).join('');
-  document.getElementById('bad-reviews').innerHTML = shop.badReviews.map(r => reviewCard(r,'bad')).join('');
-
-  document.getElementById('price-tbody').innerHTML = shop.prices.map(p=>`
-    <tr><td>${p.service}</td><td class="price">${p.price}</td><td class="price-note">${p.note}</td></tr>
-  `).join('');
-
-  document.getElementById('info-grid').innerHTML = Object.entries(shop.info).map(([k,v])=>`
-    <div class="info-item"><div class="info-label">${k}</div><div class="info-value">${v}</div></div>
-  `).join('');
+  document.getElementById('bad-reviews').innerHTML  = shop.badReviews.map(r => reviewCard(r,'bad')).join('');
+  document.getElementById('price-tbody').innerHTML  = shop.prices.map(p =>
+    `<tr><td>${p.service}</td><td class="price">${p.price}</td><td class="price-note">${p.note}</td></tr>`
+  ).join('');
+  document.getElementById('info-grid').innerHTML = Object.entries(shop.info).map(([k,v]) =>
+    `<div class="info-item"><div class="info-label">${k}</div><div class="info-value">${v}</div></div>`
+  ).join('');
 
   switchTab('reviews');
   document.getElementById('detailOverlay').classList.add('show');
 }
 
 function reviewCard(r, type) {
-  return `
-    <div class="review-card ${type}">
-      <div class="review-meta">
-        <span class="reviewer">${r.author}</span>
-        <span class="review-date">${r.date}</span>
-      </div>
-      <div class="review-stars">${'⭐'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</div>
-      <div class="review-text">${r.text}</div>
-      <div class="review-source">${r.source==='Google'?'🔵':'🔴'} 来自 ${r.source}</div>
-    </div>`;
+  return `<div class="review-card ${type}">
+    <div class="review-meta"><span class="reviewer">${r.author}</span><span class="review-date">${r.date}</span></div>
+    <div class="review-stars">${'⭐'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</div>
+    <div class="review-text">${r.text}</div>
+    <div class="review-source">${r.source==='Google'?'🔵':'🔴'} 来自 ${r.source}</div>
+  </div>`;
 }
 
 function closeDetail(e) {
-  if (!e || e.target === document.getElementById('detailOverlay')) {
+  if (!e || e.target === document.getElementById('detailOverlay'))
     document.getElementById('detailOverlay').classList.remove('show');
-  }
 }
 
 function switchTab(tab) {
