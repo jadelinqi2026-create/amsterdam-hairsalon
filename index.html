@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>荷兰理发店查找器</title>
+  <title>理发店查找器 · 荷兰 & 上海</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
@@ -242,7 +242,7 @@
 <body class="map-view">
 
 <header>
-  <h1>✂️ <span>荷兰</span>理发店</h1>
+  <h1>✂️ <span>理发店</span>查找器</h1>
   <div class="search-bar">
     <input type="text" id="searchInput" placeholder="搜索店名、城市、服务…" />
     <button onclick="doSearch()">搜索</button>
@@ -257,7 +257,8 @@
   <!-- 城市 -->
   <div class="filter-group">
     <span class="filter-group-label">城市</span>
-    <div class="filter-chip" onclick="toggleFilter(this,'city','amsterdam')">阿姆斯特丹</div>
+    <div class="filter-chip" onclick="toggleFilter(this,'city','shanghai')">🇨🇳 上海</div>
+    <div class="filter-chip" onclick="toggleFilter(this,'city','amsterdam')">🇳🇱 阿姆斯特丹</div>
     <div class="filter-chip" onclick="toggleFilter(this,'city','rotterdam')">鹿特丹</div>
     <div class="filter-chip" onclick="toggleFilter(this,'city','hague')">海牙</div>
     <div class="filter-chip" onclick="toggleFilter(this,'city','utrecht')">乌特勒支</div>
@@ -265,24 +266,42 @@
     <div class="filter-chip" onclick="toggleFilter(this,'city','groningen')">格罗宁根</div>
   </div>
   <div class="filter-divider"></div>
-  <!-- 服务 -->
+  <!-- 剪发 -->
   <div class="filter-group">
-    <span class="filter-group-label">服务</span>
-    <div class="filter-chip" onclick="toggleFilter(this,'service','chinese')">🇨🇳 中文</div>
-    <div class="filter-chip" onclick="toggleFilter(this,'service','barber')">🪒 男士剃发</div>
-    <div class="filter-chip" onclick="toggleFilter(this,'service','color')">🎨 染发</div>
-    <div class="filter-chip" onclick="toggleFilter(this,'service','women')">💇 女士</div>
+    <span class="filter-group-label">剪发</span>
+    <div class="filter-chip" onclick="toggleFilter(this,'svc','men')">🪒 男士剪</div>
+    <div class="filter-chip" onclick="toggleFilter(this,'svc','women')">💇 女士剪</div>
+    <div class="filter-chip" onclick="toggleFilter(this,'svc','kids')">🧒 儿童剪</div>
+    <div class="filter-chip" onclick="toggleFilter(this,'svc','barber')">✂️ 剃发造型</div>
+  </div>
+  <div class="filter-divider"></div>
+  <!-- 染发 -->
+  <div class="filter-group">
+    <span class="filter-group-label">染发</span>
+    <div class="filter-chip" onclick="toggleFilter(this,'svc','single-color')">单色染</div>
+    <div class="filter-chip" onclick="toggleFilter(this,'svc','highlight')">挑染</div>
+    <div class="filter-chip" onclick="toggleFilter(this,'svc','ear-dye')">挂耳染</div>
+    <div class="filter-chip" onclick="toggleFilter(this,'svc','balayage')">渐变色</div>
+    <div class="filter-chip" onclick="toggleFilter(this,'svc','bleach')">漂白脱色</div>
+  </div>
+  <div class="filter-divider"></div>
+  <!-- 烫发 -->
+  <div class="filter-group">
+    <span class="filter-group-label">烫发</span>
+    <div class="filter-chip" onclick="toggleFilter(this,'svc','straight')">拉直</div>
+    <div class="filter-chip" onclick="toggleFilter(this,'svc','perm')">烫卷</div>
+    <div class="filter-chip" onclick="toggleFilter(this,'svc','digital-perm')">数字烫</div>
   </div>
   <div class="filter-divider"></div>
   <!-- 其他 -->
   <div class="filter-group">
     <span class="filter-group-label">筛选</span>
+    <div class="filter-chip" onclick="toggleFilter(this,'other','chinese')">🇨🇳 中文服务</div>
     <div class="filter-chip" onclick="toggleFilter(this,'other','open')">🟢 营业中</div>
     <div class="filter-chip" onclick="toggleFilter(this,'other','high')">⭐ 4.5+</div>
-    <div class="filter-chip" onclick="toggleFilter(this,'other','cheap')">💰 &lt;€30</div>
   </div>
   <div class="filter-divider"></div>
-  <button class="filter-clear" id="filterClear" onclick="clearAllFilters()">✕ 清除筛选</button>
+  <button class="filter-clear" id="filterClear" onclick="clearAllFilters()">✕ 清除</button>
 </div>
 
 <div class="main">
@@ -311,6 +330,7 @@
     <div class="detail-body">
       <div class="tab-nav">
         <button class="tab-btn active" onclick="switchTab('reviews')">💬 评价</button>
+        <button class="tab-btn" onclick="switchTab('userreviews')">✏️ 用户评价</button>
         <button class="tab-btn" onclick="switchTab('prices')">💰 价目表</button>
         <button class="tab-btn" onclick="switchTab('info')">ℹ️ 详细信息</button>
       </div>
@@ -322,6 +342,34 @@
         <div class="review-section">
           <h3>👎 <span class="badge-bad">差评（3条）</span></h3>
           <div id="bad-reviews"></div>
+        </div>
+      </div>
+      <div class="tab-content" id="tab-userreviews">
+        <div id="user-reviews-list" style="margin-bottom:18px"></div>
+        <div style="background:#f9f9f6;border-radius:12px;padding:16px">
+          <div style="font-size:.85rem;font-weight:700;margin-bottom:12px;color:#1a1a2e">✏️ 写评价</div>
+          <div style="display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap">
+            <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:120px">
+              <label style="font-size:.72rem;color:#aaa;font-weight:600">评分</label>
+              <select id="rv-rating" style="padding:7px 10px;border:1.5px solid #e0e0d8;border-radius:8px;font-size:.85rem">
+                <option value="5">⭐⭐⭐⭐⭐ 5分</option>
+                <option value="4">⭐⭐⭐⭐ 4分</option>
+                <option value="3">⭐⭐⭐ 3分</option>
+                <option value="2">⭐⭐ 2分</option>
+                <option value="1">⭐ 1分</option>
+              </select>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:120px">
+              <label style="font-size:.72rem;color:#aaa;font-weight:600">昵称（选填）</label>
+              <input id="rv-nick" type="text" placeholder="匿名用户" style="padding:7px 10px;border:1.5px solid #e0e0d8;border-radius:8px;font-size:.85rem;outline:none"/>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:120px">
+              <label style="font-size:.72rem;color:#aaa;font-weight:600">服务项目（选填）</label>
+              <input id="rv-service" type="text" placeholder="如：挑染、女士剪发…" style="padding:7px 10px;border:1.5px solid #e0e0d8;border-radius:8px;font-size:.85rem;outline:none"/>
+            </div>
+          </div>
+          <textarea id="rv-text" placeholder="分享你的真实体验…" style="width:100%;padding:10px;border:1.5px solid #e0e0d8;border-radius:8px;font-size:.85rem;height:80px;resize:vertical;outline:none;font-family:inherit"></textarea>
+          <button id="rv-submit" onclick="submitReview(currentShop.id, currentShop.name, currentShop.cityLabel)" style="margin-top:10px;padding:9px 22px;background:#1a1a2e;color:#fff;border:none;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer">提交评价</button>
         </div>
       </div>
       <div class="tab-content" id="tab-prices">
@@ -339,11 +387,116 @@
 
 <script>
 // ============================================================
+// Google Sheets 评价接口
+// ============================================================
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzG3xaDH0CjvZpcKgBC058iB9P40o3nKHR1-Rgs6CUvOMnpIXMYsU_G__v4XPklIBEd/exec';
+let userReviews = {}; // { shopId: [{...}] }
+
+async function loadUserReviews() {
+  try {
+    const res = await fetch(SHEETS_URL);
+    const rows = await res.json();
+    rows.forEach(r => {
+      const id = parseInt(r['店铺ID']);
+      if (!userReviews[id]) userReviews[id] = [];
+      userReviews[id].push(r);
+    });
+  } catch(e) { console.warn('评价加载失败', e); }
+}
+
+async function submitReview(shopId, shopName, city) {
+  const rating  = document.getElementById('rv-rating').value;
+  const text    = document.getElementById('rv-text').value.trim();
+  const nick    = document.getElementById('rv-nick').value.trim() || '匿名用户';
+  const svc     = document.getElementById('rv-service').value.trim();
+  if (!text) { alert('请填写评价内容'); return; }
+  const btn = document.getElementById('rv-submit');
+  btn.disabled = true; btn.textContent = '提交中…';
+  try {
+    await fetch(SHEETS_URL, {
+      method: 'POST', mode: 'no-cors',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({shopId, shopName, city, rating, text, nickname: nick, service: svc})
+    });
+    // no-cors 无法读响应，默认成功
+    if (!userReviews[shopId]) userReviews[shopId] = [];
+    const today = new Date().toLocaleDateString('zh-CN');
+    userReviews[shopId].push({'店铺ID':shopId,'店铺名称':shopName,'评分':rating,'评价内容':text,'评价日期':today,'城市':city,'用户昵称':nick,'服务项目':svc});
+    renderUserReviews(shopId);
+    document.getElementById('rv-text').value = '';
+    document.getElementById('rv-nick').value = '';
+    btn.textContent = '✅ 提交成功！';
+    setTimeout(() => { btn.disabled=false; btn.textContent='提交评价'; }, 2000);
+  } catch(e) {
+    btn.disabled=false; btn.textContent='提交评价';
+    alert('提交失败，请稍后再试');
+  }
+}
+
+function renderUserReviews(shopId) {
+  const el = document.getElementById('user-reviews-list');
+  if (!el) return;
+  const reviews = (userReviews[shopId] || []).slice().reverse();
+  if (reviews.length === 0) {
+    el.innerHTML = '<div style="color:#aaa;font-size:.82rem;padding:12px 0;">暂无用户评价，成为第一个评价的人！</div>';
+    return;
+  }
+  el.innerHTML = reviews.map(r => `
+    <div class="review-card good" style="border-left-color:#f5a623">
+      <div class="review-meta">
+        <span class="reviewer">${r['用户昵称'] || '匿名用户'}${r['服务项目'] ? ' · '+r['服务项目'] : ''}</span>
+        <span class="review-date">${r['评价日期'] || ''}</span>
+      </div>
+      <div class="review-stars">${'⭐'.repeat(parseInt(r['评分'])||5)}</div>
+      <div class="review-text">${r['评价内容']}</div>
+    </div>
+  `).join('');
+}
+
+// ============================================================
 // 店铺数据
+// ★ 上海：样板数据占位，待接入大众点评/高德数据
 // ★ 阿姆斯特丹：真实店铺（数据来源 Yelp，坐标/电话/评分均为真实）
-// ★ 其他城市：样板数据占位，接入 Google Places API 后替换
+// ★ 其他荷兰城市：样板数据占位，接入 Google Places API 后替换
 // ============================================================
 const SHOPS = [
+  // ===== 上海（样板数据，待接入大众点评）=====
+  {
+    id:101, city:'shanghai', cityLabel:'上海',
+    name:"TBD 发型工作室", district:"静安区",
+    rating:0, reviewCount:0, isOpen:true,
+    hasChinese:true, tags:["女士剪发","男士剪发","挑染","挂耳染","渐变色","拉直","烫卷"], avgPrice:0,
+    address:"TBD", phone:"TBD",
+    hours:"TBD", lat:31.2304, lng:121.4737,
+    goodReviews:[], badReviews:[],
+    prices:[
+      {service:"女士剪发",price:"TBD",note:""},
+      {service:"男士剪发",price:"TBD",note:""},
+      {service:"挑染",price:"TBD",note:""},
+      {service:"挂耳染",price:"TBD",note:""},
+      {service:"渐变色/Balayage",price:"TBD",note:""},
+      {service:"拉直",price:"TBD",note:""},
+      {service:"烫卷",price:"TBD",note:""},
+    ],
+    info:{数据来源:"待接入大众点评/高德",备注:"如你有推荐的上海理发店，欢迎在下方提交评价！"}
+  },
+  {
+    id:102, city:'shanghai', cityLabel:'上海',
+    name:"TBD 造型店", district:"徐汇区",
+    rating:0, reviewCount:0, isOpen:true,
+    hasChinese:true, tags:["女士剪发","单色染","挑染","数字烫","漂白脱色"], avgPrice:0,
+    address:"TBD", phone:"TBD",
+    hours:"TBD", lat:31.1890, lng:121.4370,
+    goodReviews:[], badReviews:[],
+    prices:[
+      {service:"女士剪发",price:"TBD",note:""},
+      {service:"单色染",price:"TBD",note:""},
+      {service:"挑染",price:"TBD",note:""},
+      {service:"数字烫",price:"TBD",note:""},
+      {service:"漂白脱色",price:"TBD",note:""},
+    ],
+    info:{数据来源:"待接入大众点评/高德",备注:"如你有推荐的上海理发店，欢迎在下方提交评价！"}
+  },
   // ===== 阿姆斯特丹（真实 Yelp 数据）=====
   {
     id:1, city:'amsterdam', cityLabel:'阿姆斯特丹',
@@ -658,7 +811,7 @@ const SHOPS = [
 // ============================================================
 // 多选筛选状态
 // ============================================================
-const activeFilters = { city: new Set(), service: new Set(), other: new Set() };
+const activeFilters = { city: new Set(), svc: new Set(), other: new Set() };
 let currentSearch = '';
 let currentShop = null;
 let leafletMap = null;
@@ -666,7 +819,8 @@ const markers = {};
 
 // 城市中心坐标
 const CITY_CENTERS = {
-  amsterdam: [52.3676, 4.9041],
+  shanghai:   [31.2304, 121.4737],
+  amsterdam:  [52.3676, 4.9041],
   rotterdam:  [51.9225, 4.4792],
   hague:      [52.0764, 4.3144],
   utrecht:    [52.0907, 5.1214],
@@ -683,12 +837,12 @@ function toggleFilter(el, group, value) {
 }
 
 function updateClearBtn() {
-  const hasAny = activeFilters.city.size > 0 || activeFilters.service.size > 0 || activeFilters.other.size > 0;
+  const hasAny = activeFilters.city.size > 0 || activeFilters.svc.size > 0 || activeFilters.other.size > 0;
   document.getElementById('filterClear').classList.toggle('visible', hasAny);
 }
 
 function clearAllFilters() {
-  activeFilters.city.clear(); activeFilters.service.clear(); activeFilters.other.clear();
+  activeFilters.city.clear(); activeFilters.svc.clear(); activeFilters.other.clear();
   document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
   updateClearBtn();
   renderCards(getFiltered());
@@ -715,26 +869,37 @@ function getFiltered() {
   if (activeFilters.city.size > 0)
     shops = shops.filter(s => activeFilters.city.has(s.city));
 
-  // 服务多选
-  if (activeFilters.service.size > 0) {
-    shops = shops.filter(s => {
-      return Array.from(activeFilters.service).every(f => {
-        if (f === 'chinese') return s.hasChinese;
-        if (f === 'barber')  return s.tags.includes('男士剃发');
-        if (f === 'color')   return s.tags.some(t => t.includes('染发'));
-        if (f === 'women')   return s.tags.some(t => t.includes('女士'));
-        return true;
-      });
-    });
+  // 服务细化多选
+  if (activeFilters.svc.size > 0) {
+    const svcTagMap = {
+      'men':          ['男士剪发','男士剃发'],
+      'women':        ['女士剪发'],
+      'kids':         ['儿童剪'],
+      'barber':       ['男士剃发','剃发造型'],
+      'single-color': ['单色染'],
+      'highlight':    ['挑染'],
+      'ear-dye':      ['挂耳染'],
+      'balayage':     ['渐变色','Balayage'],
+      'bleach':       ['漂白脱色'],
+      'straight':     ['拉直'],
+      'perm':         ['烫卷'],
+      'digital-perm': ['数字烫'],
+    };
+    shops = shops.filter(s =>
+      Array.from(activeFilters.svc).every(f => {
+        const keywords = svcTagMap[f] || [f];
+        return keywords.some(kw => s.tags.some(t => t.includes(kw)));
+      })
+    );
   }
 
   // 其他多选
   if (activeFilters.other.size > 0) {
     shops = shops.filter(s => {
       return Array.from(activeFilters.other).every(f => {
-        if (f === 'open')  return s.isOpen;
-        if (f === 'high')  return s.rating >= 4.5;
-        if (f === 'cheap') return s.avgPrice < 30;
+        if (f === 'chinese') return s.hasChinese;
+        if (f === 'open')    return s.isOpen;
+        if (f === 'high')    return s.rating >= 4.5;
         return true;
       });
     });
@@ -747,7 +912,7 @@ function getFiltered() {
 // 地图初始化
 // ============================================================
 function initMap() {
-  leafletMap = L.map('leafletMap', { center: [52.1551, 5.3870], zoom: 8 });
+  leafletMap = L.map('leafletMap', { center: [45.0, 60.0], zoom: 3 });
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     maxZoom: 19
@@ -801,11 +966,11 @@ function renderCards(shops) {
     if (activeFilters.city.size === 1) {
       const cityKey = Array.from(activeFilters.city)[0];
       leafletMap.flyTo(CITY_CENTERS[cityKey], 13, { duration: 1 });
-    } else if (shops.length !== SHOPS.length) {
+    } else if (shops.length !== SHOPS.length && shops.length > 0) {
       const bounds = L.latLngBounds(shops.map(s => [s.lat, s.lng]));
       leafletMap.flyToBounds(bounds.pad(0.2), { duration: 1 });
     } else {
-      leafletMap.flyTo([52.1551, 5.3870], 8, { duration: 1 });
+      leafletMap.flyTo([45.0, 60.0], 3, { duration: 1 });
     }
   }
 
@@ -915,9 +1080,10 @@ function closeDetail(e) {
 }
 
 function switchTab(tab) {
-  const tabs = ['reviews','prices','info'];
+  const tabs = ['reviews','userreviews','prices','info'];
   document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', tabs[i]===tab));
   document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id==='tab-'+tab));
+  if (tab === 'userreviews' && currentShop) renderUserReviews(currentShop.id);
 }
 
 // ============================================================
@@ -926,6 +1092,7 @@ function switchTab(tab) {
 window.addEventListener('load', () => {
   initMap();
   renderCards(getFiltered());
+  loadUserReviews();
 });
 </script>
 </body>
